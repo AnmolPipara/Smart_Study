@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { StudyTask, Priority } from '@/types/study';
 import { X } from 'lucide-react';
-
+import CircularTimePicker from './CircularTimePicker';
 interface TaskFormProps {
   onSubmit: (task: StudyTask) => void;
   onClose: () => void;
@@ -35,8 +35,6 @@ const TaskForm = ({ onSubmit, onClose, editTask }: TaskFormProps) => {
     };
     onSubmit(task);
   };
-
-  const hours = Array.from({ length: 16 }, (_, i) => i + 6);
 
   return (
     <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
@@ -86,15 +84,14 @@ const TaskForm = ({ onSubmit, onClose, editTask }: TaskFormProps) => {
             </div>
             <div>
               <label className="text-xs font-medium text-muted-foreground mb-1.5 block">Est. Time (min)</label>
-              <select
+              <input
+                type="number"
+                min="1"
                 value={estimatedMinutes}
                 onChange={e => setEstimatedMinutes(Number(e.target.value))}
                 className="w-full bg-secondary rounded-lg px-3 py-2.5 text-sm text-foreground border border-border/50 focus:border-primary/50 focus:outline-none transition-colors"
-              >
-                {[15, 30, 45, 60, 90, 120].map(m => (
-                  <option key={m} value={m}>{m} min</option>
-                ))}
-              </select>
+                required
+              />
             </div>
           </div>
 
@@ -121,17 +118,11 @@ const TaskForm = ({ onSubmit, onClose, editTask }: TaskFormProps) => {
             </div>
             <div>
               <label className="text-xs font-medium text-muted-foreground mb-1.5 block">Time Slot</label>
-              <select
-                value={scheduledHour}
-                onChange={e => setScheduledHour(Number(e.target.value))}
-                className="w-full bg-secondary rounded-lg px-3 py-2.5 text-sm text-foreground border border-border/50 focus:border-primary/50 focus:outline-none transition-colors"
-              >
-                {hours.map(h => (
-                  <option key={h} value={h}>
-                    {h > 12 ? h - 12 : h}:00 {h >= 12 ? 'PM' : 'AM'}
-                  </option>
-                ))}
-              </select>
+              <CircularTimePicker
+                hour={scheduledHour}
+                minute={0}
+                onChange={(h) => setScheduledHour(h)}
+              />
             </div>
           </div>
 
