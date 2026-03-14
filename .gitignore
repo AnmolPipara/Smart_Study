@@ -24,4 +24,13 @@ dist-ssr
 *.sw?
 .env
 config.toml
-config.toml
+
+# Supabase
+supabase/.temp
+supabase/.env
+
+# Testing
+playwright-report/
+test-results/
+.pytest_cache/
+__pycache__/

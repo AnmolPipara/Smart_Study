@@ -17,7 +17,11 @@ import DeadlinePanel from '@/components/DeadlinePanel';
 import StudyProgress from '@/components/StudyProgress';
 import TaskForm from '@/components/TaskForm';
 import DashboardSkeleton from '@/components/DashboardSkeleton';
-import { Plus, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Menu, LayoutList, BookOpen, BarChart2 } from 'lucide-react';
+import PomodoroTimer from '@/components/PomodoroTimer';
+import MobileBottomNav from '@/components/MobileBottomNav';
+import { useDeadlineNotifications } from '@/hooks/useDeadlineNotifications';
+import { exportTasksAsCSV } from '@/utils/exportData';
+import { Plus, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Menu, LayoutList, BookOpen, BarChart2, Download } from 'lucide-react';
 import { useState } from 'react';
 
 const Dashboard = () => {
@@ -42,6 +46,9 @@ const Dashboard = () => {
 
   const [showAiPlanner, setShowAiPlanner] = useState(false);
 
+  // Enable deadline notifications
+  useDeadlineNotifications(tasks);
+
   useEffect(() => {
     loadTasks();
     loadNotes();
@@ -55,8 +62,8 @@ const Dashboard = () => {
     <div className="min-h-screen bg-background">
       <Header />
 
-      <main className="w-full px-4 sm:px-6 py-6 flex gap-4">
-        <aside className={`shrink-0 transition-all duration-300 ${navCollapsed ? 'w-12' : 'w-40'}`}>
+      <main className="w-full px-4 sm:px-6 py-6 pb-24 md:pb-6 flex gap-4">
+        <aside className={`shrink-0 transition-all duration-300 hidden md:block ${navCollapsed ? 'w-12' : 'w-40'}`}>
           <div className="relative space-y-2">
             {/* Hamburger toggle */}
             <button
@@ -219,6 +226,13 @@ const Dashboard = () => {
                   >
                     AI Auto Plan
                   </button>
+                  <button
+                    onClick={() => exportTasksAsCSV(tasks)}
+                    className="px-3 py-2 rounded-lg text-xs font-semibold bg-secondary text-foreground hover:bg-secondary/80 transition-colors border border-border/60"
+                    title="Export tasks as CSV"
+                  >
+                    <Download className="w-4 h-4" />
+                  </button>
                 </>
               )}
 
@@ -272,6 +286,7 @@ const Dashboard = () => {
               )}
             </div>
             <div className="space-y-4">
+              <PomodoroTimer />
               <StudyProgress tasks={tasks} />
               <DeadlinePanel tasks={tasks} />
             </div>
@@ -282,6 +297,7 @@ const Dashboard = () => {
           <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] gap-6">
             <AnalyticsDashboard tasks={tasks} selectedDate={selectedDate} />
             <div className="space-y-4">
+              <PomodoroTimer />
               <StudyProgress tasks={tasks} />
               <DeadlinePanel tasks={tasks} />
             </div>

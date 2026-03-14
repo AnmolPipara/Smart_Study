@@ -1,6 +1,8 @@
 import { StudyTask } from '@/types/study';
 import { format, isToday } from 'date-fns';
 import { CheckCircle2, ListTodo, SunMedium } from 'lucide-react';
+import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
+import { useCallback } from 'react';
 
 interface KanbanPlannerProps {
   tasks: StudyTask[];
@@ -9,10 +11,12 @@ interface KanbanPlannerProps {
   onEdit: (task: StudyTask) => void;
 }
 
+type ColumnId = 'today' | 'upcoming' | 'completed';
+
 const KanbanPlanner = ({ tasks, onToggle, onDelete, onEdit }: KanbanPlannerProps) => {
   const todayStr = format(new Date(), 'yyyy-MM-dd');
 
-  const columns = [
+  const columns: { id: ColumnId; title: string; description: string; icon: typeof SunMedium; tasks: StudyTask[] }[] = [
     {
       id: 'today',
       title: 'Today',
@@ -36,96 +40,126 @@ const KanbanPlanner = ({ tasks, onToggle, onDelete, onEdit }: KanbanPlannerProps
     },
   ];
 
+  const handleDragEnd = useCallback((result: DropResult) => {
+    const { destination, draggableId } = result;
+    if (!destination) return;
+
+    const sourceColumn = result.source.droppableId as ColumnId;
+    const destColumn = destination.droppableId as ColumnId;
+
+    if (sourceColumn === destColumn) return;
+
+    // If moved to/from completed, toggle completion
+    if (destColumn === 'completed' || sourceColumn === 'completed') {
+      onToggle(draggableId);
+    }
+  }, [onToggle]);
+
   return (
     <div className="space-y-4">
       <div className="flex items-baseline justify-between">
         <h2 className="text-lg font-semibold">Kanban Study Board</h2>
         <p className="text-xs text-muted-foreground">
-          Drag-and-drop is not enabled yet, but you can manage tasks visually across columns.
+          Drag tasks between columns to update their status.
         </p>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {columns.map((column) => (
-          <section
-            key={column.id}
-            className="glass rounded-xl p-3 flex flex-col min-h-[260px]"
-          >
-            <header className="mb-3 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-secondary flex items-center justify-center">
-                  <column.icon className="w-4 h-4 text-[#7C3AED]" />
-                </div>
-                <div>
-                  <h3 className="text-sm font-semibold">{column.title}</h3>
-                  <p className="text-[10px] text-muted-foreground">
-                    {column.description}
-                  </p>
-                </div>
-              </div>
-              <span className="text-[10px] text-muted-foreground font-medium px-2 py-0.5 rounded-full bg-secondary/70">
-                {column.tasks.length} tasks
-              </span>
-            </header>
-
-            <div className="space-y-2 flex-1">
-              {column.tasks.length === 0 ? (
-                <p className="text-[11px] text-muted-foreground/60 text-center py-6">
-                  No tasks here yet.
-                </p>
-              ) : (
-                column.tasks.map((task) => {
-                  const deadline = new Date(task.deadline);
-                  const isTodayDeadline = isToday(deadline);
-                  return (
-                    <button
-                      key={task.id}
-                      type="button"
-                      onClick={() => onEdit(task)}
-                      className={[
-                        'w-full text-left rounded-lg p-3 text-xs transition-all shadow-card border border-[#3D2D6A] bg-[#1E1535] hover:bg-[#261B45]',
-                      ].join(' ')}
-                    >
-                      <div className="flex items-start justify-between gap-2 mb-1.5">
-                        <p className="font-semibold truncate text-foreground">
-                          {task.title}
+      <DragDropContext onDragEnd={handleDragEnd}>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {columns.map((column) => (
+            <Droppable key={column.id} droppableId={column.id}>
+              {(provided, snapshot) => (
+                <section
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                  className={`glass rounded-xl p-3 flex flex-col min-h-[260px] transition-colors ${
+                    snapshot.isDraggingOver ? 'ring-2 ring-primary/40 bg-primary/5' : ''
+                  }`}
+                >
+                  <header className="mb-3 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-7 h-7 rounded-lg bg-secondary flex items-center justify-center">
+                        <column.icon className="w-4 h-4 text-[#7C3AED]" />
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-semibold">{column.title}</h3>
+                        <p className="text-[10px] text-muted-foreground">
+                          {column.description}
                         </p>
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            onToggle(task.id);
-                          }}
-                          className="shrink-0"
-                        >
-                          {task.completed ? (
-                            <CheckCircle2 className="w-4 h-4 text-[#22C55E]" />
-                          ) : (
-                            <span className="w-4 h-4 inline-block rounded-full border border-[#7C3AED]/60" />
-                          )}
-                        </button>
                       </div>
-                      <p className="text-[11px] text-muted-foreground mb-1">
-                        {task.subject}
+                    </div>
+                    <span className="text-[10px] text-muted-foreground font-medium px-2 py-0.5 rounded-full bg-secondary/70">
+                      {column.tasks.length} tasks
+                    </span>
+                  </header>
+
+                  <div className="space-y-2 flex-1">
+                    {column.tasks.length === 0 ? (
+                      <p className="text-[11px] text-muted-foreground/60 text-center py-6">
+                        No tasks here yet.
                       </p>
-                      <div className="flex items-center justify-between text-[10px] text-muted-foreground">
-                        <span>{task.estimatedMinutes} min</span>
-                        <span>
-                          {isTodayDeadline
-                            ? 'Due today'
-                            : format(deadline, 'MMM d')}
-                        </span>
-                      </div>
-                    </button>
-                  );
-                })
+                    ) : (
+                      column.tasks.map((task, index) => {
+                        const deadline = new Date(task.deadline);
+                        const isTodayDeadline = isToday(deadline);
+                        return (
+                          <Draggable key={task.id} draggableId={task.id} index={index}>
+                            {(provided, snapshot) => (
+                              <div
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                                className={[
+                                  'w-full text-left rounded-lg p-3 text-xs transition-all shadow-card border border-[#3D2D6A] bg-[#1E1535] hover:bg-[#261B45] cursor-grab active:cursor-grabbing',
+                                  snapshot.isDragging ? 'ring-2 ring-primary shadow-lg rotate-1 scale-105' : '',
+                                ].join(' ')}
+                                onClick={() => onEdit(task)}
+                              >
+                                <div className="flex items-start justify-between gap-2 mb-1.5">
+                                  <p className="font-semibold truncate text-foreground">
+                                    {task.title}
+                                  </p>
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      onToggle(task.id);
+                                    }}
+                                    className="shrink-0"
+                                  >
+                                    {task.completed ? (
+                                      <CheckCircle2 className="w-4 h-4 text-[#22C55E]" />
+                                    ) : (
+                                      <span className="w-4 h-4 inline-block rounded-full border border-[#7C3AED]/60" />
+                                    )}
+                                  </button>
+                                </div>
+                                <p className="text-[11px] text-muted-foreground mb-1">
+                                  {task.subject}
+                                </p>
+                                <div className="flex items-center justify-between text-[10px] text-muted-foreground">
+                                  <span>{task.estimatedMinutes} min</span>
+                                  <span>
+                                    {isTodayDeadline
+                                      ? 'Due today'
+                                      : format(deadline, 'MMM d')}
+                                  </span>
+                                </div>
+                              </div>
+                            )}
+                          </Draggable>
+                        );
+                      })
+                    )}
+                    {provided.placeholder}
+                  </div>
+                </section>
               )}
-            </div>
-          </section>
-        ))}
-      </div>
+            </Droppable>
+          ))}
+        </div>
+      </DragDropContext>
     </div>
   );
 };
 
 export default KanbanPlanner;
-

@@ -1,6 +1,5 @@
-const OPENROUTER_API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY as string | undefined;
+import { supabase } from '@/integrations/supabase/client';
 
-const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
 const MODEL = 'openai/gpt-4o-mini';
 
 interface ChatOptions {
@@ -56,40 +55,21 @@ function extractJson<T>(content: string): T {
 }
 
 async function callOpenRouter({ systemPrompt, userPrompt }: ChatOptions): Promise<string> {
-  if (!OPENROUTER_API_KEY) {
-    throw new Error('OpenRouter API key is missing. Set VITE_OPENROUTER_API_KEY in .env.');
-  }
-
-  const res = await fetch(OPENROUTER_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${OPENROUTER_API_KEY}`,
-      'HTTP-Referer': window.location.origin,
-      'X-Title': 'Smart Study Planner',
-    },
-    body: JSON.stringify({
-      model: MODEL,
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: userPrompt },
-      ],
-      temperature: 0.4,
-    }),
+  const { data, error } = await supabase.functions.invoke('openrouter-proxy', {
+    body: { systemPrompt, userPrompt, model: MODEL },
   });
 
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`OpenRouter error: ${res.status} ${text}`);
+  if (error) {
+    console.error('Edge Function error:', error);
+    throw new Error(`AI Service Error: ${error.message}`);
   }
 
-  const data = await res.json();
-  const content: string | undefined = data.choices?.[0]?.message?.content;
-  if (!content) {
-    throw new Error('No content returned from OpenRouter');
+  if (!data || !data.choices?.[0]?.message?.content) {
+    console.error('Unexpected AI response:', data);
+    throw new Error('AI service returned an empty or invalid response');
   }
 
-  return content;
+  return data.choices[0].message.content;
 }
 
 // ---------- AI Auto Study Planner ----------

@@ -2,13 +2,15 @@ import { useState, useRef, useEffect } from 'react';
 import AppLogo from '@/components/AppLogo';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { LogOut, User } from 'lucide-react';
+import { LogOut, User, Sun, Moon } from 'lucide-react';
+import { useTheme } from 'next-themes';
 
 const Header = () => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const { theme, setTheme } = useTheme();
 
   const handleSignOut = async () => {
     await signOut();
@@ -45,7 +47,15 @@ const Header = () => {
           </div>
         </div>
 
-        {/* User Profile */}
+        {/* Theme Toggle + User Profile */}
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            className="p-2 rounded-lg bg-secondary/70 hover:bg-secondary transition-colors text-muted-foreground hover:text-foreground"
+            title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+          >
+            {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+          </button>
         {user && (
           <div className="relative" ref={menuRef}>
             <button
@@ -115,6 +125,7 @@ const Header = () => {
             )}
           </div>
         )}
+        </div>
       </div>
     </header>
   );

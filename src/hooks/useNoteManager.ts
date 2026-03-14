@@ -1,39 +1,56 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { StudyNote } from '@/types/study';
 import { fetchNotes, upsertNote, deleteNote } from '@/services/noteService';
 import { NoteSubjectNode } from '@/components/Notes/NotesSidebar';
 import { toast } from 'sonner';
 
 export function useNoteManager(userId: string | undefined) {
-  const [notes, setNotes] = useState<StudyNote[]>([]);
+  const queryClient = useQueryClient();
   const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null);
 
-  const loadNotes = useCallback(async () => {
-    try {
-      const data = await fetchNotes();
-      setNotes(data);
-      if (data.length > 0 && !selectedNoteId) {
-        setSelectedNoteId(data[0].id);
-      }
-    } catch {
-      toast.error('Failed to load notes');
+  const { data: notes = [], isLoading, refetch: loadNotes } = useQuery({
+    queryKey: ['notes', userId],
+    queryFn: fetchNotes,
+    enabled: !!userId,
+  });
+
+  // Automatically select the first note if none is selected
+  useEffect(() => {
+    if (notes.length > 0 && !selectedNoteId) {
+      setSelectedNoteId(notes[0].id);
     }
-  }, [selectedNoteId]);
+  }, [notes, selectedNoteId]);
+
+  const upsertMutation = useMutation({
+    mutationFn: (note: StudyNote) => upsertNote(note, userId!),
+    onSuccess: (saved) => {
+      queryClient.invalidateQueries({ queryKey: ['notes', userId] });
+      setSelectedNoteId(saved.id);
+    },
+    onError: () => {
+      toast.error('Failed to save note');
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => deleteNote(id),
+    onSuccess: (_, deletedId) => {
+      queryClient.invalidateQueries({ queryKey: ['notes', userId] });
+      if (selectedNoteId === deletedId) {
+        setSelectedNoteId(null);
+      }
+      toast.success('Note deleted');
+    },
+    onError: () => {
+      toast.error('Failed to delete note');
+    },
+  });
 
   const handleNoteChange = useCallback(async (note: StudyNote) => {
     if (!userId) return;
-    try {
-      const saved = await upsertNote(note, userId);
-      setNotes(prev =>
-        prev.some(n => n.id === saved.id)
-          ? prev.map(n => (n.id === saved.id ? saved : n))
-          : [...prev, saved],
-      );
-      setSelectedNoteId(saved.id);
-    } catch {
-      toast.error('Failed to save note');
-    }
-  }, [userId]);
+    upsertMutation.mutate(note);
+  }, [userId, upsertMutation]);
 
   const handleCreateNote = useCallback((parentId: string | null) => {
     if (!userId) return;
@@ -54,17 +71,8 @@ export function useNoteManager(userId: string | undefined) {
   }, [userId, notes, handleNoteChange]);
 
   const handleDeleteNote = useCallback(async (id: string) => {
-    try {
-      await deleteNote(id);
-      setNotes(prev => prev.filter(n => n.id !== id));
-      if (selectedNoteId === id) {
-        setSelectedNoteId(null);
-      }
-      toast.success('Note deleted');
-    } catch {
-      toast.error('Failed to delete note');
-    }
-  }, [selectedNoteId]);
+    deleteMutation.mutate(id);
+  }, [deleteMutation]);
 
   const subjectTree: NoteSubjectNode[] = useMemo(() => {
     const byId = new Map<string, NoteSubjectNode>();

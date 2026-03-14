@@ -1,61 +1,68 @@
 import { useState, useCallback } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { StudyTask } from '@/types/study';
 import { fetchTasks, createTask, editTask, removeTask, toggleTaskCompletion } from '@/services/taskService';
 import { toast } from 'sonner';
 
 export function useTaskManager(userId: string | undefined) {
-  const [tasks, setTasks] = useState<StudyTask[]>([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
   const [showForm, setShowForm] = useState(false);
   const [editingTask, setEditingTask] = useState<StudyTask | null>(null);
 
-  const loadTasks = useCallback(async () => {
-    try {
-      const data = await fetchTasks();
-      setTasks(data);
-    } catch {
-      toast.error('Failed to load tasks');
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const { data: tasks = [], isLoading: loading, refetch: loadTasks } = useQuery({
+    queryKey: ['tasks', userId],
+    queryFn: fetchTasks,
+    enabled: !!userId,
+  });
+
+  const addTaskMutation = useMutation({
+    mutationFn: (task: StudyTask) => editingTask ? editTask(task) : createTask(task, userId!),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['tasks', userId] });
+      setShowForm(false);
+      setEditingTask(null);
+      toast.success(editingTask ? 'Task updated' : 'Task created');
+    },
+    onError: (err: any) => {
+      toast.error(err.message || 'Failed to save task');
+    },
+  });
+
+  const toggleMutation = useMutation({
+    mutationFn: ({ id, completed }: { id: string; completed: boolean }) => toggleTaskCompletion(id, completed),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['tasks', userId] });
+    },
+    onError: () => {
+      toast.error('Failed to update task');
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => removeTask(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['tasks', userId] });
+      toast.success('Task deleted');
+    },
+    onError: () => {
+      toast.error('Failed to delete task');
+    },
+  });
 
   const handleAddTask = useCallback(async (task: StudyTask) => {
     if (!userId) return;
-    try {
-      if (editingTask) {
-        const updated = await editTask(task);
-        setTasks(prev => prev.map(t => t.id === updated.id ? updated : t));
-      } else {
-        const created = await createTask(task, userId);
-        setTasks(prev => [...prev, created]);
-      }
-      setShowForm(false);
-      setEditingTask(null);
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to save task');
-    }
-  }, [userId, editingTask]);
+    addTaskMutation.mutate(task);
+  }, [userId, addTaskMutation]);
 
   const handleToggle = useCallback(async (id: string) => {
     const task = tasks.find(t => t.id === id);
     if (!task) return;
-    try {
-      await toggleTaskCompletion(id, !task.completed);
-      setTasks(prev => prev.map(t => t.id === id ? { ...t, completed: !t.completed } : t));
-    } catch {
-      toast.error('Failed to update task');
-    }
-  }, [tasks]);
+    toggleMutation.mutate({ id, completed: !task.completed });
+  }, [tasks, toggleMutation]);
 
   const handleDelete = useCallback(async (id: string) => {
-    try {
-      await removeTask(id);
-      setTasks(prev => prev.filter(t => t.id !== id));
-    } catch {
-      toast.error('Failed to delete task');
-    }
-  }, []);
+    deleteMutation.mutate(id);
+  }, [deleteMutation]);
 
   const handleEdit = useCallback((task: StudyTask) => {
     setEditingTask(task);

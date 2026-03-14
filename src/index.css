@@ -57,6 +57,42 @@
     --shadow-glow: 0 0 24px rgba(124, 58, 237, 0.35); /* #7C3AED */
     --shadow-card: 0 4px 24px rgba(124, 58, 237, 0.08);
   }
+
+  .light {
+    --background: 0 0% 98%;
+    --foreground: 240 10% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 10%;
+    --primary: 262 83% 58%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 250 20% 93%;
+    --secondary-foreground: 240 10% 10%;
+    --muted: 250 20% 93%;
+    --muted-foreground: 215 16% 45%;
+    --accent: 262 83% 58%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 250 15% 85%;
+    --input: 250 15% 85%;
+    --ring: 262 83% 58%;
+    --radius: 0.75rem;
+    --priority-high: 0 84% 60%;
+    --priority-medium: 38 92% 50%;
+    --priority-low: 142 71% 45%;
+    --sidebar-background: 0 0% 97%;
+    --sidebar-foreground: 240 10% 10%;
+    --sidebar-primary: 262 83% 58%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 250 20% 93%;
+    --sidebar-accent-foreground: 240 10% 10%;
+    --sidebar-border: 250 15% 85%;
+    --sidebar-ring: 262 83% 58%;
+    --shadow-glow: 0 0 24px rgba(124, 58, 237, 0.15);
+    --shadow-card: 0 4px 24px rgba(124, 58, 237, 0.05);
+  }
 }
 
 @layer base {
@@ -67,13 +103,18 @@
   body {
     @apply text-foreground font-sans antialiased;
     font-family: 'Inter', sans-serif;
-    background-color: #0D0A1A;
+    background-color: hsl(var(--background));
     background-image: 
-      /* Large purple blob top right */
       radial-gradient(circle at 80% -20%, rgba(124, 58, 237, 0.15), transparent 50%),
-      /* Soft warm amber glow bottom left */
       radial-gradient(circle at -10% 110%, rgba(217, 119, 6, 0.08), transparent 60%);
     background-attachment: fixed;
+  }
+
+  .light body,
+  .light {
+    background-image: 
+      radial-gradient(circle at 80% -20%, rgba(124, 58, 237, 0.06), transparent 50%),
+      radial-gradient(circle at -10% 110%, rgba(217, 119, 6, 0.04), transparent 60%);
   }
 
   h1, h2, h3, h4, h5, h6 {

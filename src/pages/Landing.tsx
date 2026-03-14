@@ -40,7 +40,28 @@ const features = [
 ];
 
 const Landing = () => {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+
+  const renderAuthButton = (className: string, showIcon = false) => {
+    if (loading) {
+      return (
+        <div className={`${className} opacity-50 cursor-wait flex items-center gap-2`}>
+          <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+          <span>Checking...</span>
+        </div>
+      );
+    }
+
+    return (
+      <Link
+        to={user ? '/dashboard' : '/auth'}
+        className={className}
+      >
+        {user ? 'Go to Dashboard' : (showIcon ? 'Start Planning' : 'Log In')}
+        {showIcon && <ArrowRight className="w-5 h-5 text-[#C084FC]" />}
+      </Link>
+    );
+  };
 
   return (
     <div className="min-h-screen bg-[#0D0A1A] relative overflow-hidden flex flex-col">
@@ -60,12 +81,7 @@ const Landing = () => {
             </div>
           </div>
           <div className="flex items-center gap-6">
-            <Link
-              to={user ? '/dashboard' : '/auth'}
-              className="bg-[#1A1530] border border-[#7C3AED]/30 text-white px-6 py-2.5 rounded-full text-sm font-semibold hover:bg-[#2D2550] transition-all shadow-[0_0_15px_rgba(124,58,237,0.3)]"
-            >
-              {user ? 'Go to Dashboard' : 'Log In'}
-            </Link>
+            {renderAuthButton("bg-[#1A1530] border border-[#7C3AED]/30 text-white px-6 py-2.5 rounded-full text-sm font-semibold hover:bg-[#2D2550] transition-all shadow-[0_0_15px_rgba(124,58,237,0.3)]")}
           </div>
         </div>
       </nav>
@@ -82,13 +98,7 @@ const Landing = () => {
               <span className="text-white/90">All In One Place!</span>
             </h1>
             
-            <Link
-              to={user ? '/dashboard' : '/auth'}
-              className="bg-[#0D0A1A] border border-[#7C3AED]/50 text-white px-8 py-4 rounded-full text-base font-semibold hover:bg-[#1A1530] transition-all flex items-center gap-3 shadow-[0_0_20px_rgba(124,58,237,0.2)]"
-            >
-              Start Planning
-              <ArrowRight className="w-5 h-5 text-[#C084FC]" />
-            </Link>
+            {renderAuthButton("bg-[#0D0A1A] border border-[#7C3AED]/50 text-white px-8 py-4 rounded-full text-base font-semibold hover:bg-[#1A1530] transition-all flex items-center gap-3 shadow-[0_0_20px_rgba(124,58,237,0.2)]", true)}
 
             {/* Decorative Cursor Tag */}
             <div className="mt-12 flex items-center gap-2 animate-bounce">
