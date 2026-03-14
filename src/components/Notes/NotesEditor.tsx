@@ -174,17 +174,17 @@ const NotesEditor = ({ note, onChange }: NotesEditorProps) => {
         />
       </div>
 
-      <aside className="w-full md:w-72 flex flex-col bg-secondary/40">
+      <aside className="w-full md:w-96 flex flex-col bg-secondary/40">
         <div className="px-3 py-2 border-b border-border/40 flex items-center justify-between gap-2">
-          <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
-            <Sparkles className="w-3.5 h-3.5 text-primary" />
+          <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+            <Sparkles className="w-4 h-4 text-[#7C3AED]" />
             <span className="font-semibold">AI Assistant</span>
           </div>
           <button
             type="button"
             onClick={handleSummarize}
             disabled={loadingSummary}
-            className="px-2 py-1 rounded-md text-[10px] bg-primary text-primary-foreground hover:opacity-90 disabled:opacity-60"
+            className="px-2.5 py-1 rounded-md text-xs bg-gradient-to-r from-[#7C3AED] to-[#C084FC] text-primary-foreground hover:opacity-90 disabled:opacity-60"
           >
             {loadingSummary ? 'Summarizing…' : 'Summarize'}
           </button>
@@ -192,14 +192,14 @@ const NotesEditor = ({ note, onChange }: NotesEditorProps) => {
 
         <div className="px-3 py-2 border-b border-border/40 space-y-2">
           <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+            <div className="flex items-center gap-1 text-xs text-muted-foreground">
               <HelpCircle className="w-3 h-3" />
               <span>Practice questions</span>
             </div>
             <select
               value={difficulty}
               onChange={(e) => setDifficulty(e.target.value as 'easy' | 'medium' | 'hard')}
-              className="bg-background/40 border border-border/50 rounded-md text-[10px] px-1.5 py-0.5"
+              className="bg-background/40 border border-border/50 rounded-md text-xs px-1.5 py-0.5"
             >
               <option value="easy">Easy</option>
               <option value="medium">Medium</option>
@@ -210,19 +210,19 @@ const NotesEditor = ({ note, onChange }: NotesEditorProps) => {
             value={topic}
             onChange={(e) => setTopic(e.target.value)}
             placeholder="Topic (e.g., Banker's Algorithm)"
-            className="w-full bg-background/40 rounded-md px-2 py-1.5 text-[10px] border border-border/50 outline-none"
+            className="w-full bg-background/40 rounded-md px-2 py-1.5 text-xs border border-border/50 outline-none"
           />
           <button
             type="button"
             onClick={handleGenerateQuestions}
             disabled={loadingQuestions}
-            className="w-full text-[10px] bg-secondary text-foreground rounded-md py-1.5 border border-border/60 hover:bg-secondary/80 disabled:opacity-60"
+            className="w-full text-xs bg-secondary text-[#C084FC] rounded-md py-1.5 border border-[#7C3AED]/60 hover:bg-secondary/80 disabled:opacity-60"
           >
             {loadingQuestions ? 'Generating…' : 'Generate Questions'}
           </button>
         </div>
 
-        <div className="flex-1 overflow-auto px-3 py-2 space-y-3 text-[10px]">
+        <div className="flex-1 overflow-auto px-3 py-2 space-y-3 text-xs">
           {summary && (
             <div className="space-y-1.5">
               <p className="font-semibold text-foreground">Summary</p>

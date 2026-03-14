@@ -16,7 +16,7 @@ import { fetchNotes, upsertNote } from '@/services/noteService';
 import DeadlinePanel from '@/components/DeadlinePanel';
 import StudyProgress from '@/components/StudyProgress';
 import TaskForm from '@/components/TaskForm';
-import { Plus, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, LogOut } from 'lucide-react';
+import { Plus, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Menu, LayoutList, BookOpen, BarChart2 } from 'lucide-react';
 import { addDays, subDays, addWeeks, subWeeks } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -33,7 +33,8 @@ const Dashboard = () => {
   const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null);
   const [showAiPlanner, setShowAiPlanner] = useState(false);
   const [loading, setLoading] = useState(true);
-  const { user, signOut } = useAuth();
+  const [navCollapsed, setNavCollapsed] = useState(false);
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -157,10 +158,6 @@ const Dashboard = () => {
     setShowForm(true);
   };
 
-  const handleSignOut = async () => {
-    await signOut();
-    navigate('/');
-  };
 
   const navigateDate = (direction: 'prev' | 'next') => {
     if (view === 'daily' || view === 'timeline') {
@@ -185,89 +182,133 @@ const Dashboard = () => {
     <div className="min-h-screen bg-background">
       <Header />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 flex gap-4">
-        <aside className="w-40 shrink-0">
+      <main className="w-full px-4 sm:px-6 py-6 flex gap-4">
+        <aside className={`shrink-0 transition-all duration-300 ${navCollapsed ? 'w-12' : 'w-40'}`}>
           <div className="relative space-y-2">
-            <span
-              className="absolute left-0 right-0 h-9 rounded-xl bg-gradient-to-r from-primary via-accent to-orange-500 opacity-30 pointer-events-none transition-transform duration-300"
-              style={{
-                transform:
-                  section === 'tasks'
-                    ? 'translateY(0rem)'
-                    : section === 'notes'
-                    ? 'translateY(2.75rem)'
-                    : 'translateY(5.5rem)',
-              }}
-            />
-          <button
-            type="button"
-            onClick={() => {
-              if (section !== 'tasks') {
-                setSection('tasks');
-                setTasksExpanded(true);
-              } else {
-                setTasksExpanded((prev) => !prev);
-              }
-            }}
-            className={`relative w-full text-left text-xs px-3 py-2 rounded-xl transition-all duration-300 flex items-center justify-between ${
-              section === 'tasks'
-                ? 'bg-gradient-to-r from-primary via-accent to-orange-500 text-primary-foreground shadow-card scale-[1.02]'
-                : 'bg-secondary/60 text-muted-foreground hover:text-foreground hover:bg-secondary'
-            }`}
-          >
-            Tasks
-            {tasksExpanded ? (
-              <ChevronUp className="w-3.5 h-3.5 shrink-0" />
-            ) : (
-              <ChevronDown className="w-3.5 h-3.5 shrink-0" />
-            )}
-          </button>
-          {section === 'tasks' && tasksExpanded && (
-            <div className="pl-3 mt-0.5 space-y-0.5 border-l border-border/40 ml-2">
-              {[
-                { id: 'daily' as const, label: 'Daily' },
-                { id: 'weekly' as const, label: 'Weekly' },
-                { id: 'calendar' as const, label: 'Month' },
-                { id: 'kanban' as const, label: 'Kanban' },
-                { id: 'timeline' as const, label: 'Timeline' },
-              ].map((item) => (
+            {/* Hamburger toggle */}
+            <button
+              type="button"
+              onClick={() => setNavCollapsed((prev) => !prev)}
+              className="w-full flex items-center justify-start pl-2 p-2 rounded-xl bg-secondary/60 hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors mb-1"
+              title={navCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            >
+              <Menu className="w-4 h-4" />
+            </button>
+
+            {navCollapsed ? (
+              // Collapsed: icon-only buttons
+              <>
                 <button
-                  key={item.id}
                   type="button"
-                  onClick={() => setView(item.id)}
-                  className={`w-full text-left text-[11px] px-2 py-1.5 rounded-md transition-colors ${
-                    view === item.id
-                      ? 'bg-primary/15 text-primary font-medium'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-secondary/60'
+                  onClick={() => { setSection('tasks'); setTasksExpanded(true); setNavCollapsed(false); }}
+                  title="Tasks"
+                  className={`w-full flex items-center justify-center p-2 rounded-xl transition-all ${
+                    section === 'tasks'
+                      ? 'bg-gradient-to-r from-primary to-[#C084FC] text-primary-foreground'
+                      : 'bg-secondary/60 text-muted-foreground hover:bg-secondary hover:text-foreground'
                   }`}
                 >
-                  {item.label}
+                  <LayoutList className="w-4 h-4" />
                 </button>
-              ))}
-            </div>
-          )}
-          <button
-            type="button"
-            onClick={() => setSection('notes')}
-            className={`relative w-full text-left text-xs px-3 py-2 rounded-xl transition-all duration-300 ${
-              section === 'notes'
-                ? 'bg-gradient-to-r from-primary via-accent to-orange-500 text-primary-foreground shadow-card scale-[1.02]'
-                : 'bg-secondary/60 text-muted-foreground hover:text-foreground hover:bg-secondary'
-            }`}
-          >
-            Notes
-          </button>
-          <button
-            type="button"
-            onClick={() => setSection('analytics')}
-            className={`relative w-full text-left text-xs px-3 py-2 rounded-xl transition-all duration-300 ${
-              section === 'analytics'
-                ? 'bg-gradient-to-r from-primary via-accent to-orange-500 text-primary-foreground shadow-card scale-[1.02]'
-                : 'bg-secondary/60 text-muted-foreground hover:text-foreground hover:bg-secondary'
-            }`}
-          >
-            Analytics
-          </button>
+                <button
+                  type="button"
+                  onClick={() => { setSection('notes'); setNavCollapsed(false); }}
+                  title="Notes"
+                  className={`w-full flex items-center justify-center p-2 rounded-xl transition-all ${
+                    section === 'notes'
+                      ? 'bg-gradient-to-r from-primary to-[#C084FC] text-primary-foreground'
+                      : 'bg-secondary/60 text-muted-foreground hover:bg-secondary hover:text-foreground'
+                  }`}
+                >
+                  <BookOpen className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setSection('analytics'); setNavCollapsed(false); }}
+                  title="Analytics"
+                  className={`w-full flex items-center justify-center p-2 rounded-xl transition-all ${
+                    section === 'analytics'
+                      ? 'bg-gradient-to-r from-primary to-[#C084FC] text-primary-foreground'
+                      : 'bg-secondary/60 text-muted-foreground hover:bg-secondary hover:text-foreground'
+                  }`}
+                >
+                  <BarChart2 className="w-4 h-4" />
+                </button>
+              </>
+            ) : (
+              // Expanded: full sidebar
+              <>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (section !== 'tasks') {
+                      setSection('tasks');
+                      setTasksExpanded(true);
+                    } else {
+                      setTasksExpanded((prev) => !prev);
+                    }
+                  }}
+                  className={`relative w-full text-left text-sm px-3 py-2.5 rounded-xl transition-all duration-300 flex items-center justify-between ${
+                    section === 'tasks'
+                      ? 'bg-gradient-to-r from-primary to-[#C084FC] text-primary-foreground shadow-card'
+                      : 'bg-secondary/60 text-muted-foreground hover:text-foreground hover:bg-secondary'
+                  }`}
+                >
+                  Tasks
+                  {tasksExpanded ? (
+                    <ChevronUp className="w-4 h-4 shrink-0" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4 shrink-0" />
+                  )}
+                </button>
+                {section === 'tasks' && tasksExpanded && (
+                  <div className="pl-3 mt-0.5 space-y-0.5 border-l border-border/40 ml-2">
+                    {[
+                      { id: 'daily' as const, label: 'Daily' },
+                      { id: 'weekly' as const, label: 'Weekly' },
+                      { id: 'calendar' as const, label: 'Month' },
+                      { id: 'kanban' as const, label: 'Kanban' },
+                      { id: 'timeline' as const, label: 'Timeline' },
+                    ].map((item) => (
+                      <button
+                        key={item.id}
+                        type="button"
+                        onClick={() => setView(item.id)}
+                        className={`w-full text-left text-xs px-2 py-1.5 rounded-md transition-colors ${
+                          view === item.id
+                            ? 'bg-primary/15 text-primary font-medium'
+                            : 'text-muted-foreground hover:text-foreground hover:bg-secondary/60'
+                        }`}
+                      >
+                        {item.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+                <button
+                  type="button"
+                  onClick={() => setSection('notes')}
+                  className={`relative w-full text-left text-sm px-3 py-2.5 rounded-xl transition-all duration-300 ${
+                    section === 'notes'
+                      ? 'bg-gradient-to-r from-primary to-[#C084FC] text-primary-foreground shadow-card'
+                      : 'bg-secondary/60 text-muted-foreground hover:text-foreground hover:bg-secondary'
+                  }`}
+                >
+                  Notes
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSection('analytics')}
+                  className={`relative w-full text-left text-sm px-3 py-2.5 rounded-xl transition-all duration-300 ${
+                    section === 'analytics'
+                      ? 'bg-gradient-to-r from-primary to-[#C084FC] text-primary-foreground shadow-card'
+                      : 'bg-secondary/60 text-muted-foreground hover:text-foreground hover:bg-secondary'
+                  }`}
+                >
+                  Analytics
+                </button>
+              </>
+            )}
           </div>
         </aside>
 
@@ -294,26 +335,20 @@ const Dashboard = () => {
                 <>
                   <button
                     onClick={() => { setEditingTask(null); setShowForm(true); }}
-                    className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2.5 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity glow-primary"
+                    className="flex items-center gap-2 bg-gradient-to-r from-primary to-[#C084FC] text-primary-foreground px-4 py-2.5 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity glow-primary"
                   >
                     <Plus className="w-4 h-4" />
                     Add Task
                   </button>
                   <button
                     onClick={() => setShowAiPlanner(true)}
-                    className="px-3 py-2 rounded-lg text-xs font-semibold bg-secondary text-foreground hover:bg-secondary/80 transition-colors border border-border/60"
+                    className="px-3 py-2 rounded-lg text-xs font-semibold bg-secondary text-foreground hover:bg-secondary/80 transition-colors border border-primary/40"
                   >
                     AI Auto Plan
                   </button>
                 </>
               )}
-              <button
-                onClick={handleSignOut}
-                className="p-2.5 rounded-lg bg-secondary hover:bg-secondary/80 transition-colors"
-                title="Sign out"
-              >
-                <LogOut className="w-4 h-4 text-muted-foreground" />
-              </button>
+
             </div>
           </div>
         )}

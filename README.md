@@ -1,73 +1,69 @@
-# Welcome to your Lovable project
+# Smart Study Buddy
 
-## Project info
+Smart Study Buddy is a comprehensive, AI-powered study and task management application built to help students and professionals organize their workflow, track progress, and manage their time effectively.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## 🌟 Key Features & Workflow
 
-## How can I edit this code?
+### 📋 Advanced Task Management
+Flexible and dynamic planning features to suit any workflow:
+- **Daily & Weekly Planners:** Organize your tasks on a micro and macro level.
+- **Kanban Board:** Visually track task progress through customizable stages.
+- **Timeline & Calendar Views:** Get a bird's-eye view of your deadlines and upcoming study sessions.
+- **Deadline Panel:** Never miss a due date with a dedicated panel for urgent and upcoming tasks.
 
-There are several ways of editing your application.
+### 🤖 AI-Powered Planning
+- **AI Planner Dialog:** Leverage AI to generate optimal study schedules, break down complex tasks, and summarize notes.
 
-**Use Lovable**
+### ⏱️ Time & Focus Management
+- **Circular Time Picker:** Intuitive time selection for scheduling study blocks.
+- **Focus Tracking:** Keep track of how long you spend on tasks to optimize your productivity.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+### 📊 Analytics & Progress Tracking
+- **Analytics Dashboard:** Visualize your study habits, task completion rates, and overall productivity trends.
+- **Study Progress:** Interactive charts and metrics to keep you motivated and on track.
 
-Changes made via Lovable will be committed automatically to this repo.
+### 📔 Note-Taking System
+- Integrated note management system to keep your study materials and task details in one centralized location.
 
-**Use your preferred IDE**
+---
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## 🛠️ Technology Stack
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- **Frontend:** React 18, TypeScript, Vite
+- **Styling:** Tailwind CSS, shadcn/ui, Radix UI
+- **State Management & Data Fetching:** TanStack React Query
+- **Backend/Database:** Supabase (@supabase/supabase-js)
+- **Forms & Validation:** React Hook Form, Zod
+- **Charts & Visualization:** Recharts
+- **Date Utilities:** date-fns
 
-Follow these steps:
+## 🚀 Getting Started
 
+To run the project locally:
+
+1. **Clone the repository:**
+   ```sh
+   git clone <YOUR_GIT_URL>
+   cd smart-study-buddy
+   ```
+
+2. **Install dependencies:**
+   ```sh
+   npm install
+   ```
+
+3. **Start the development server:**
+   ```sh
+   npm run dev
+   ```
+
+## 🏗️ Building for Production
+
+To create a production-ready build:
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+npm run build
 ```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+To run tests (if applicable):
+```sh
+npm run test
+```

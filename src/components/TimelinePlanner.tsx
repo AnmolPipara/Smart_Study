@@ -35,8 +35,8 @@ const TimelinePlanner = ({
       </div>
 
       <div className="relative mt-4">
-        <div className="h-1 rounded-full bg-gradient-to-r from-slate-700 via-slate-800 to-slate-900" />
-        <div className="flex justify-between mt-2 text-[10px] text-muted-foreground">
+        <div className="h-1 rounded-full bg-gradient-to-r from-[#2D2550] via-[#7C3AED]/50 to-[#2D2550]" />
+        <div className="flex justify-between mt-2 text-[10px] text-[#94A3B8]">
           <span>6 AM</span>
           <span>12 PM</span>
           <span>6 PM</span>
@@ -64,7 +64,7 @@ const TimelinePlanner = ({
 
             const gradientClass =
               task.priority === 'high'
-                ? 'from-red-500 via-pink-500 to-orange-400'
+                ? 'from-[#4C1D95] via-[#7C3AED] to-[#C084FC]'
                 : task.priority === 'medium'
                 ? 'from-amber-400 via-amber-300 to-yellow-400'
                 : 'from-emerald-400 via-teal-400 to-cyan-400';

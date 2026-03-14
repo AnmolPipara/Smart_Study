@@ -60,7 +60,7 @@ const AnalyticsDashboard = ({ tasks, selectedDate }: AnalyticsDashboardProps) =>
 
   const mostStudiedSubject = subjectData.sort((a, b) => b.minutes - a.minutes)[0]?.name ?? '—';
 
-  const COLORS = ['#a855f7', '#22c55e', '#f97316', '#3b82f6', '#eab308', '#ec4899'];
+  const COLORS = ['#7C3AED', '#C084FC', '#4C1D95', '#D97706', '#22C55E', '#ec4899'];
 
   return (
     <div className="space-y-4">
@@ -106,7 +106,7 @@ const AnalyticsDashboard = ({ tasks, selectedDate }: AnalyticsDashboardProps) =>
                   fontSize: 11,
                 }}
               />
-              <Bar dataKey="minutes" fill="#a855f7" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="minutes" fill="#7C3AED" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>

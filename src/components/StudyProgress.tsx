@@ -17,25 +17,25 @@ const StudyProgress = ({ tasks }: StudyProgressProps) => {
       icon: Target,
       label: 'Total Tasks',
       value: total,
-      color: 'text-primary',
+      color: 'text-[#7C3AED]',
     },
     {
       icon: CheckCircle2,
       label: 'Completed',
       value: completed,
-      color: 'text-priority-low',
+      color: 'text-[#22C55E]',
     },
     {
       icon: Clock,
       label: 'Study Time',
       value: `${Math.round(totalMinutes / 60)}h`,
-      color: 'text-accent',
+      color: 'text-[#D97706]',
     },
     {
       icon: TrendingUp,
       label: 'Progress',
       value: `${completionRate}%`,
-      color: 'text-priority-medium',
+      color: 'text-[#C084FC]',
     },
   ];
 
@@ -46,7 +46,7 @@ const StudyProgress = ({ tasks }: StudyProgressProps) => {
       {/* Progress bar */}
       <div className="h-2 bg-secondary rounded-full mb-4 overflow-hidden">
         <div
-          className="h-full bg-primary rounded-full transition-all duration-500"
+          className="h-full bg-[#7C3AED] rounded-full transition-all duration-500"
           style={{ width: `${completionRate}%` }}
         />
       </div>

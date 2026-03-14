@@ -6,51 +6,56 @@
 
 @layer base {
   :root {
-    --background: 220 40% 4%;
+    /* Base Colors */
+    --background: 250 44% 7%; /* #0D0A1A */
     --foreground: 210 20% 96%;
 
-    --card: 220 35% 8%;
+    /* Surfacing */
+    --card: 251 39% 14%; /* #1A1530 */
     --card-foreground: 210 20% 96%;
-
-    --popover: 220 35% 8%;
+    --popover: 251 39% 14%;
     --popover-foreground: 210 20% 96%;
 
-    --primary: 0 84% 60%;
-    --primary-foreground: 220 30% 5%;
+    /* Accents */
+    --primary: 262 83% 58%; /* #7C3AED */
+    --primary-foreground: 210 20% 96%;
+    --secondary: 253 37% 23%; /* #2D2550 */
+    --secondary-foreground: 210 20% 96%;
+    
+    --muted: 251 39% 14%;
+    --muted-foreground: 215 16% 65%; /* #94A3B8 */
 
-    --secondary: 220 30% 10%;
-    --secondary-foreground: 210 20% 85%;
+    --accent: 262 83% 58%; /* Replaced with primary purple */
+    --accent-foreground: 210 20% 96%;
 
-    --muted: 220 25% 12%;
-    --muted-foreground: 215 15% 55%;
-
-    --accent: 14 90% 60%;
-    --accent-foreground: 220 30% 5%;
-
-    --destructive: 0 90% 60%;
+    --destructive: 0 84% 60%; /* #EF4444 (Keep red for actual errors) */
     --destructive-foreground: 210 20% 96%;
 
-    --border: 220 30% 18%;
-    --input: 220 30% 18%;
-    --ring: 0 84% 60%;
+    /* Borders */
+    --border: 253 37% 23%; /* #2D2550 */
+    --input: 253 37% 23%;
+    --ring: 262 83% 58%;
 
     --radius: 0.75rem;
 
-    --priority-high: 0 84% 60%;
-    --priority-medium: 32 95% 60%;
-    --priority-low: 160 80% 45%;
+    /* Semantic Priorities */
+    --priority-high: 0 84% 60%; /* Keep red */
+    --priority-medium: 38 92% 50%; /* #F59E0B Keep Warning amber */
+    --priority-low: 142 71% 45%; /* #22C55E Keep Success green */
 
-    --sidebar-background: 220 35% 6%;
-    --sidebar-foreground: 210 20% 85%;
-    --sidebar-primary: 0 84% 60%;
-    --sidebar-primary-foreground: 220 30% 5%;
-    --sidebar-accent: 220 30% 10%;
-    --sidebar-accent-foreground: 210 20% 85%;
-    --sidebar-border: 220 30% 18%;
-    --sidebar-ring: 0 84% 60%;
+    /* Sidebar inherits background */
+    --sidebar-background: 250 44% 7%;
+    --sidebar-foreground: 210 20% 96%;
+    --sidebar-primary: 262 83% 58%;
+    --sidebar-primary-foreground: 210 20% 96%;
+    --sidebar-accent: 251 39% 14%;
+    --sidebar-accent-foreground: 210 20% 96%;
+    --sidebar-border: 253 37% 23%;
+    --sidebar-ring: 262 83% 58%;
 
-    --shadow-glow: 0 0 24px hsl(0 84% 60% / 0.35);
-    --shadow-card: 0 4px 24px hsl(0 0% 0% / 0.3);
+    /* Premium Shadows */
+    --shadow-glow: 0 0 24px rgba(124, 58, 237, 0.35); /* #7C3AED */
+    --shadow-card: 0 4px 24px rgba(124, 58, 237, 0.08);
   }
 }
 
@@ -62,10 +67,12 @@
   body {
     @apply text-foreground font-sans antialiased;
     font-family: 'Inter', sans-serif;
-    background:
-      radial-gradient(circle at top left, hsl(350 80% 18% / 0.9), transparent 55%),
-      radial-gradient(circle at top right, hsl(0 85% 22% / 0.7), transparent 55%),
-      radial-gradient(circle at bottom, hsl(220 40% 4%), hsl(220 35% 3%));
+    background-color: #0D0A1A;
+    background-image: 
+      /* Large purple blob top right */
+      radial-gradient(circle at 80% -20%, rgba(124, 58, 237, 0.15), transparent 50%),
+      /* Soft warm amber glow bottom left */
+      radial-gradient(circle at -10% 110%, rgba(217, 119, 6, 0.08), transparent 60%);
     background-attachment: fixed;
   }
 
@@ -86,24 +93,24 @@
   }
   .app-logo-orb {
     background-image:
-      radial-gradient(circle at 0% 0%, hsla(0, 90%, 60%, 0.9), transparent 55%),
-      radial-gradient(circle at 100% 0%, hsla(14, 90%, 60%, 0.9), transparent 55%),
-      radial-gradient(circle at 50% 120%, hsla(220, 35%, 6%, 1), transparent 60%);
+      radial-gradient(circle at 0% 0%, hsla(276, 96%, 75%, 0.9), transparent 55%), /* #C084FC */
+      radial-gradient(circle at 100% 0%, hsla(262, 83%, 58%, 0.9), transparent 55%), /* #7C3AED */
+      radial-gradient(circle at 50% 120%, hsla(264, 67%, 35%, 1), transparent 60%); /* #4C1D95 */
     animation: app-logo-orbit 8s ease-in-out infinite;
   }
 
   @keyframes app-logo-orbit {
     0% {
       transform: translate3d(0, 0, 0) scale(1);
-      box-shadow: 0 0 18px rgba(239, 68, 68, 0.6);
+      box-shadow: 0 0 18px rgba(124, 58, 237, 0.4);
     }
     50% {
       transform: translate3d(0, -4px, 0) scale(1.05);
-      box-shadow: 0 0 26px rgba(248, 113, 113, 0.85);
+      box-shadow: 0 0 26px rgba(192, 132, 252, 0.6);
     }
     100% {
       transform: translate3d(0, 0, 0) scale(1);
-      box-shadow: 0 0 18px rgba(239, 68, 68, 0.6);
+      box-shadow: 0 0 18px rgba(124, 58, 237, 0.4);
     }
   }
 }

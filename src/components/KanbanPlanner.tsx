@@ -53,7 +53,7 @@ const KanbanPlanner = ({ tasks, onToggle, onDelete, onEdit }: KanbanPlannerProps
             <header className="mb-3 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="w-7 h-7 rounded-lg bg-secondary flex items-center justify-center">
-                  <column.icon className="w-4 h-4 text-primary" />
+                  <column.icon className="w-4 h-4 text-[#7C3AED]" />
                 </div>
                 <div>
                   <h3 className="text-sm font-semibold">{column.title}</h3>
@@ -82,12 +82,7 @@ const KanbanPlanner = ({ tasks, onToggle, onDelete, onEdit }: KanbanPlannerProps
                       type="button"
                       onClick={() => onEdit(task)}
                       className={[
-                        'w-full text-left rounded-lg p-3 text-xs transition-all bg-gradient-to-br shadow-card',
-                        task.priority === 'high'
-                          ? 'from-red-500/25 via-red-400/15 to-background'
-                          : task.priority === 'medium'
-                          ? 'from-amber-400/25 via-amber-300/15 to-background'
-                          : 'from-emerald-400/25 via-emerald-300/15 to-background',
+                        'w-full text-left rounded-lg p-3 text-xs transition-all shadow-card border border-[#3D2D6A] bg-[#1E1535] hover:bg-[#261B45]',
                       ].join(' ')}
                     >
                       <div className="flex items-start justify-between gap-2 mb-1.5">
@@ -103,9 +98,9 @@ const KanbanPlanner = ({ tasks, onToggle, onDelete, onEdit }: KanbanPlannerProps
                           className="shrink-0"
                         >
                           {task.completed ? (
-                            <CheckCircle2 className="w-4 h-4 text-primary" />
+                            <CheckCircle2 className="w-4 h-4 text-[#22C55E]" />
                           ) : (
-                            <span className="w-4 h-4 inline-block rounded-full border border-primary/60" />
+                            <span className="w-4 h-4 inline-block rounded-full border border-[#7C3AED]/60" />
                           )}
                         </button>
                       </div>
