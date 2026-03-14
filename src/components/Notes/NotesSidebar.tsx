@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { NotebookTabs, Plus, Menu } from 'lucide-react';
+import { NotebookTabs, Plus, Menu, Trash2 } from 'lucide-react';
 
 export interface NoteSubjectNode {
   id: string;
@@ -12,6 +12,7 @@ interface NotesSidebarProps {
   selectedId: string | null;
   onSelect: (id: string) => void;
   onCreate: (parentId: string | null) => void;
+  onDelete?: (id: string) => void;
 }
 
 const NotesSidebar = ({
@@ -19,16 +20,15 @@ const NotesSidebar = ({
   selectedId,
   onSelect,
   onCreate,
+  onDelete,
 }: NotesSidebarProps) => {
   const [collapsed, setCollapsed] = useState(false);
 
   const renderNode = (node: NoteSubjectNode, depth = 0) => {
     const isSelected = node.id === selectedId;
     return (
-      <div key={node.id} className="mb-1">
-        <button
-          type="button"
-          onClick={() => onSelect(node.id)}
+      <div key={node.id} className="mb-1 group">
+        <div
           className={`w-full flex items-center justify-between text-left text-xs px-2 py-1.5 rounded-md ${
             isSelected
               ? 'bg-[#7C3AED]/15 text-[#7C3AED] font-semibold'
@@ -36,8 +36,27 @@ const NotesSidebar = ({
           }`}
           style={{ paddingLeft: 8 + depth * 12 }}
         >
-          <span className="truncate">{node.name}</span>
-        </button>
+          <button
+            type="button"
+            onClick={() => onSelect(node.id)}
+            className="truncate flex-1 text-left"
+          >
+            {node.name}
+          </button>
+          {onDelete && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete(node.id);
+              }}
+              className="p-0.5 rounded opacity-0 group-hover:opacity-100 hover:bg-red-500/20 text-red-400 hover:text-red-300 transition-all"
+              title="Delete note"
+            >
+              <Trash2 className="w-3 h-3" />
+            </button>
+          )}
+        </div>
         {node.children && node.children.length > 0 && (
           <div className="mt-0.5">
             {node.children.map((child) => renderNode(child, depth + 1))}

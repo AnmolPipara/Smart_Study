@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
-import { StudyTask, StudyNote } from '@/types/study';
-import { fetchTasks, createTask, editTask, removeTask, toggleTaskCompletion } from '@/services/taskService';
+import { useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTaskManager } from '@/hooks/useTaskManager';
+import { useNoteManager } from '@/hooks/useNoteManager';
+import { useDashboardNav } from '@/hooks/useDashboardNav';
 import Header from '@/components/Header';
 import DailyPlanner from '@/components/DailyPlanner';
 import WeeklyPlanner from '@/components/WeeklyPlanner';
@@ -10,172 +11,44 @@ import KanbanPlanner from '@/components/KanbanPlanner';
 import TimelinePlanner from '@/components/TimelinePlanner';
 import AnalyticsDashboard from '@/components/AnalyticsDashboard';
 import AiPlannerDialog from '@/components/AiPlannerDialog';
-import NotesSidebar, { NoteSubjectNode } from '@/components/Notes/NotesSidebar';
+import NotesSidebar from '@/components/Notes/NotesSidebar';
 import NotesEditor from '@/components/Notes/NotesEditor';
-import { fetchNotes, upsertNote } from '@/services/noteService';
 import DeadlinePanel from '@/components/DeadlinePanel';
 import StudyProgress from '@/components/StudyProgress';
 import TaskForm from '@/components/TaskForm';
+import DashboardSkeleton from '@/components/DashboardSkeleton';
 import { Plus, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Menu, LayoutList, BookOpen, BarChart2 } from 'lucide-react';
-import { addDays, subDays, addWeeks, subWeeks } from 'date-fns';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'sonner';
+import { useState } from 'react';
 
 const Dashboard = () => {
-  const [tasks, setTasks] = useState<StudyTask[]>([]);
-  const [notes, setNotes] = useState<StudyNote[]>([]);
-  const [section, setSection] = useState<'tasks' | 'notes' | 'analytics'>('tasks');
-  const [tasksExpanded, setTasksExpanded] = useState(true);
-  const [view, setView] = useState<'daily' | 'weekly' | 'calendar' | 'kanban' | 'timeline'>('daily');
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [showForm, setShowForm] = useState(false);
-  const [editingTask, setEditingTask] = useState<StudyTask | null>(null);
-  const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null);
-  const [showAiPlanner, setShowAiPlanner] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [navCollapsed, setNavCollapsed] = useState(false);
   const { user } = useAuth();
-  const navigate = useNavigate();
+
+  const {
+    tasks, loading, showForm, editingTask,
+    loadTasks, handleAddTask, handleToggle, handleDelete, handleEdit,
+    openNewTaskForm, closeForm,
+  } = useTaskManager(user?.id);
+
+  const {
+    selectedNoteId, setSelectedNoteId, selectedNote, subjectTree,
+    loadNotes, handleNoteChange, handleCreateNote, handleDeleteNote,
+  } = useNoteManager(user?.id);
+
+  const {
+    section, setSection, view, setView,
+    selectedDate, setSelectedDate, tasksExpanded, setTasksExpanded,
+    navCollapsed, toggleNav, navigateDate, goToToday,
+  } = useDashboardNav();
+
+  const [showAiPlanner, setShowAiPlanner] = useState(false);
 
   useEffect(() => {
     loadTasks();
     loadNotes();
   }, []);
 
-  const loadTasks = async () => {
-    try {
-      const data = await fetchTasks();
-      setTasks(data);
-    } catch (err: any) {
-      toast.error('Failed to load tasks');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleAddTask = async (task: StudyTask) => {
-    try {
-      if (editingTask) {
-        const updated = await editTask(task);
-        setTasks(prev => prev.map(t => t.id === updated.id ? updated : t));
-      } else {
-        const created = await createTask(task, user!.id);
-        setTasks(prev => [...prev, created]);
-      }
-      setShowForm(false);
-      setEditingTask(null);
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to save task');
-    }
-  };
-
-  const loadNotes = async () => {
-    try {
-      const data = await fetchNotes();
-      setNotes(data);
-      if (data.length > 0 && !selectedNoteId) {
-        setSelectedNoteId(data[0].id);
-      }
-    } catch (err: any) {
-      console.error(err);
-      toast.error('Failed to load notes');
-    }
-  };
-
-  const handleNoteChange = async (note: StudyNote) => {
-    if (!user) return;
-    try {
-      const saved = await upsertNote(note, user.id);
-      setNotes(prev =>
-        prev.some(n => n.id === saved.id)
-          ? prev.map(n => (n.id === saved.id ? saved : n))
-          : [...prev, saved],
-      );
-      setSelectedNoteId(saved.id);
-    } catch (err: any) {
-      console.error(err);
-      toast.error('Failed to save note');
-    }
-  };
-
-  const handleCreateNote = (parentId: string | null) => {
-    if (!user) return;
-    const baseSubject = parentId ? notes.find(n => n.id === parentId)?.subject ?? 'General' : 'General';
-    const draft: StudyNote = {
-      id: '',
-      userId: user.id,
-      subject: baseSubject,
-      title: 'New Note',
-      content: '',
-      parentId,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-    handleNoteChange(draft);
-  };
-
-  const subjectTree: NoteSubjectNode[] = (() => {
-    const byId = new Map<string, NoteSubjectNode>();
-    const roots: NoteSubjectNode[] = [];
-    notes.forEach(note => {
-      byId.set(note.id, { id: note.id, name: note.title || note.subject, children: [] });
-    });
-    notes.forEach(note => {
-      const node = byId.get(note.id)!;
-      if (note.parentId && byId.has(note.parentId)) {
-        byId.get(note.parentId)!.children!.push(node);
-      } else {
-        roots.push(node);
-      }
-    });
-    return roots;
-  })();
-
-  const selectedNote = notes.find(n => n.id === selectedNoteId) ?? null;
-
-  const handleToggle = async (id: string) => {
-    const task = tasks.find(t => t.id === id);
-    if (!task) return;
-    try {
-      await toggleTaskCompletion(id, !task.completed);
-      setTasks(prev => prev.map(t => t.id === id ? { ...t, completed: !t.completed } : t));
-    } catch {
-      toast.error('Failed to update task');
-    }
-  };
-
-  const handleDelete = async (id: string) => {
-    try {
-      await removeTask(id);
-      setTasks(prev => prev.filter(t => t.id !== id));
-    } catch {
-      toast.error('Failed to delete task');
-    }
-  };
-
-  const handleEdit = (task: StudyTask) => {
-    setEditingTask(task);
-    setShowForm(true);
-  };
-
-
-  const navigateDate = (direction: 'prev' | 'next') => {
-    if (view === 'daily' || view === 'timeline') {
-      setSelectedDate(d => direction === 'next' ? addDays(d, 1) : subDays(d, 1));
-    } else if (view === 'weekly') {
-      setSelectedDate(d => direction === 'next' ? addWeeks(d, 1) : subWeeks(d, 1));
-    } else {
-      // Calendar & Kanban just move by weeks for a broader overview
-      setSelectedDate(d => direction === 'next' ? addWeeks(d, 1) : subWeeks(d, 1));
-    }
-  };
-
   if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <p className="text-muted-foreground">Loading your study plan...</p>
-      </div>
-    );
+    return <DashboardSkeleton />;
   }
 
   return (
@@ -188,7 +61,7 @@ const Dashboard = () => {
             {/* Hamburger toggle */}
             <button
               type="button"
-              onClick={() => setNavCollapsed((prev) => !prev)}
+              onClick={toggleNav}
               className="w-full flex items-center justify-start pl-2 p-2 rounded-xl bg-secondary/60 hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors mb-1"
               title={navCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
             >
@@ -200,7 +73,7 @@ const Dashboard = () => {
               <>
                 <button
                   type="button"
-                  onClick={() => { setSection('tasks'); setTasksExpanded(true); setNavCollapsed(false); }}
+                  onClick={() => { setSection('tasks'); setTasksExpanded(true); toggleNav(); }}
                   title="Tasks"
                   className={`w-full flex items-center justify-center p-2 rounded-xl transition-all ${
                     section === 'tasks'
@@ -212,7 +85,7 @@ const Dashboard = () => {
                 </button>
                 <button
                   type="button"
-                  onClick={() => { setSection('notes'); setNavCollapsed(false); }}
+                  onClick={() => { setSection('notes'); toggleNav(); }}
                   title="Notes"
                   className={`w-full flex items-center justify-center p-2 rounded-xl transition-all ${
                     section === 'notes'
@@ -224,7 +97,7 @@ const Dashboard = () => {
                 </button>
                 <button
                   type="button"
-                  onClick={() => { setSection('analytics'); setNavCollapsed(false); }}
+                  onClick={() => { setSection('analytics'); toggleNav(); }}
                   title="Analytics"
                   className={`w-full flex items-center justify-center p-2 rounded-xl transition-all ${
                     section === 'analytics'
@@ -320,7 +193,7 @@ const Dashboard = () => {
                 <ChevronLeft className="w-4 h-4" />
               </button>
               <button
-                onClick={() => setSelectedDate(new Date())}
+                onClick={goToToday}
                 className="px-3 py-1.5 rounded-lg text-xs font-medium bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
               >
                 Today
@@ -334,7 +207,7 @@ const Dashboard = () => {
               {section === 'tasks' && (
                 <>
                   <button
-                    onClick={() => { setEditingTask(null); setShowForm(true); }}
+                    onClick={openNewTaskForm}
                     className="flex items-center gap-2 bg-gradient-to-r from-primary to-[#C084FC] text-primary-foreground px-4 py-2.5 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity glow-primary"
                   >
                     <Plus className="w-4 h-4" />
@@ -422,6 +295,7 @@ const Dashboard = () => {
               selectedId={selectedNoteId}
               onSelect={setSelectedNoteId}
               onCreate={handleCreateNote}
+              onDelete={handleDeleteNote}
             />
             <NotesEditor note={selectedNote} onChange={handleNoteChange} />
           </div>
@@ -432,7 +306,7 @@ const Dashboard = () => {
       {showForm && (
         <TaskForm
           onSubmit={handleAddTask}
-          onClose={() => { setShowForm(false); setEditingTask(null); }}
+          onClose={closeForm}
           editTask={editingTask}
         />
       )}
