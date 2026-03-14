@@ -1,69 +1,129 @@
-# Smart Study Buddy
+# 📚 Smart Study Planner
 
-Smart Study Buddy is a comprehensive, AI-powered study and task management application built to help students and professionals organize their workflow, track progress, and manage their time effectively.
+> **Plan Smarter. Study Better – All In One Place!**
 
-## 🌟 Key Features & Workflow
+Smart Study Planner is a comprehensive, AI-powered study management application that helps students organize their workflow, track progress, and optimize study time with intelligent planning tools.
 
-### 📋 Advanced Task Management
-Flexible and dynamic planning features to suit any workflow:
-- **Daily & Weekly Planners:** Organize your tasks on a micro and macro level.
-- **Kanban Board:** Visually track task progress through customizable stages.
-- **Timeline & Calendar Views:** Get a bird's-eye view of your deadlines and upcoming study sessions.
-- **Deadline Panel:** Never miss a due date with a dedicated panel for urgent and upcoming tasks.
+---
 
-### 🤖 AI-Powered Planning
-- **AI Planner Dialog:** Leverage AI to generate optimal study schedules, break down complex tasks, and summarize notes.
+## ✨ Key Features
 
-### ⏱️ Time & Focus Management
-- **Circular Time Picker:** Intuitive time selection for scheduling study blocks.
-- **Focus Tracking:** Keep track of how long you spend on tasks to optimize your productivity.
+### 📋 Multi-View Task Management
+Plan your study sessions with **five** flexible views, all in one dashboard:
+| View | Description |
+|------|-------------|
+| **Daily Planner** | Hour-by-hour schedule for focused daily planning |
+| **Weekly Planner** | Bird's-eye view of your entire week |
+| **Calendar** | Month-level overview with date-based task mapping |
+| **Kanban Board** | Drag-and-drop task progress tracking |
+| **Timeline** | Chronological visualization of tasks and deadlines |
 
-### 📊 Analytics & Progress Tracking
-- **Analytics Dashboard:** Visualize your study habits, task completion rates, and overall productivity trends.
-- **Study Progress:** Interactive charts and metrics to keep you motivated and on track.
+### 🤖 AI-Powered Study Tools
+Powered by GPT-4o-mini via OpenRouter:
+- **AI Study Planner** — Generate structured multi-day study plans based on exam name, subjects, topics, and difficulty level
+- **AI Question Generator** — Create practice questions on any topic for self-assessment
+- **AI Notes Summarizer** — Automatically summarize notes into key points and flashcards
 
-### 📔 Note-Taking System
-- Integrated note management system to keep your study materials and task details in one centralized location.
+### 📔 Hierarchical Note-Taking
+- Create and organize notes in a **tree-structured** sidebar (parent/child relationships)
+- Rich text editor with auto-save via Supabase
+- AI-powered summarization of any note
+
+### 📊 Analytics Dashboard
+- Visualize task completion rates, study hours, and productivity trends
+- Interactive charts powered by Recharts
+
+### ⏰ Deadline & Progress Tracking
+- Dedicated **Deadline Panel** for urgent and upcoming tasks
+- **Study Progress** component showing completion stats at a glance
+
+### 🔐 Authentication
+- Email/password sign-up and sign-in
+- Google OAuth (one-click login)
+- Protected dashboard routes
 
 ---
 
 ## 🛠️ Technology Stack
 
-- **Frontend:** React 18, TypeScript, Vite
-- **Styling:** Tailwind CSS, shadcn/ui, Radix UI
-- **State Management & Data Fetching:** TanStack React Query
-- **Backend/Database:** Supabase (@supabase/supabase-js)
-- **Forms & Validation:** React Hook Form, Zod
-- **Charts & Visualization:** Recharts
-- **Date Utilities:** date-fns
+| Layer | Technologies |
+|-------|-------------|
+| **Frontend** | React 18, TypeScript, Vite |
+| **Styling** | Tailwind CSS, shadcn/ui, Radix UI |
+| **State & Data** | TanStack React Query |
+| **Backend & Auth** | Supabase (PostgreSQL + Auth) |
+| **AI** | OpenRouter API (GPT-4o-mini) |
+| **Forms** | React Hook Form, Zod |
+| **Charts** | Recharts |
+| **Date Utilities** | date-fns |
+| **Testing** | Vitest, Playwright, Testing Library |
+
+---
+
+## 📁 Project Structure
+
+```
+src/
+├── pages/            # Landing, Auth, Dashboard, NotFound
+├── components/       # UI components (planners, forms, notes, analytics)
+│   ├── Notes/        # NotesSidebar, NotesEditor
+│   └── ui/           # shadcn/ui primitives
+├── services/         # aiService, taskService, noteService
+├── contexts/         # AuthContext (Supabase auth state)
+├── hooks/            # use-mobile, use-toast
+├── integrations/     # Supabase client config & types
+├── types/            # StudyTask, StudyNote, Priority
+├── lib/              # Utilities
+└── test/             # Vitest setup & example tests
+```
+
+---
 
 ## 🚀 Getting Started
 
-To run the project locally:
+### Prerequisites
+- **Node.js** ≥ 18
+- A **Supabase** project (for database and auth)
+- An **OpenRouter API key** (for AI features)
 
-1. **Clone the repository:**
-   ```sh
-   git clone <YOUR_GIT_URL>
-   cd smart-study-buddy
-   ```
+### Installation
 
-2. **Install dependencies:**
-   ```sh
-   npm install
-   ```
+```bash
+# 1. Clone the repository
+git clone <YOUR_GIT_URL>
+cd smart-study-buddy
 
-3. **Start the development server:**
-   ```sh
-   npm run dev
-   ```
+# 2. Install dependencies
+npm install
 
-## 🏗️ Building for Production
+# 3. Set up environment variables
+#    Create a .env file in the root with:
+VITE_SUPABASE_URL=<your-supabase-url>
+VITE_SUPABASE_ANON_KEY=<your-supabase-anon-key>
+VITE_OPENROUTER_API_KEY=<your-openrouter-api-key>
 
-To create a production-ready build:
-```sh
+# 4. Start the development server
+npm run dev
+```
+
+The app will be available at `http://localhost:3000`.
+
+### Building for Production
+
+```bash
 npm run build
+npm run preview   # Preview the production build
 ```
-To run tests (if applicable):
-```sh
-npm run test
+
+### Running Tests
+
+```bash
+npm run test          # Run tests once
+npm run test:watch    # Run tests in watch mode
 ```
+
+---
+
+## 📄 License
+
+This project is for educational and personal use.
