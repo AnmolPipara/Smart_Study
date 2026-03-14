@@ -1,0 +1,43 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="bg" cx="30%" cy="20%" r="80%">
+      <stop offset="0%" stop-color="#a855f7"/>
+      <stop offset="35%" stop-color="#6366f1"/>
+      <stop offset="70%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#020617"/>
+    </radialGradient>
+    <linearGradient id="sStroke" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f97316"/>
+      <stop offset="50%" stop-color="#22c55e"/>
+      <stop offset="100%" stop-color="#38bdf8"/>
+    </linearGradient>
+  </defs>
+  <rect x="8" y="8" width="112" height="112" rx="32" fill="url(#bg)"/>
+  <path
+    d="M44 36c6-6 13-8 20-8 11 0 20 6 20 16 0 14-15 16-24 18s-14 4-14 12c0 8 7 12 16 12 7 0 13-2 18-7"
+    fill="none"
+    stroke="url(#sStroke)"
+    stroke-width="8"
+    stroke-linecap="round"
+    stroke-linejoin="round">
+    <animate
+      attributeName="stroke-dashoffset"
+      from="60"
+      to="0"
+      dur="2.5s"
+      repeatCount="indefinite" />
+    <animate
+      attributeName="stroke-dasharray"
+      values="0,200;40,200;0,200"
+      dur="2.5s"
+      repeatCount="indefinite" />
+  </path>
+  <circle cx="40" cy="36" r="4" fill="#e5e7eb" opacity="0.9">
+    <animate
+      attributeName="opacity"
+      values="0.4;1;0.4"
+      dur="1.8s"
+      repeatCount="indefinite" />
+  </circle>
+</svg>
+

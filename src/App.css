@@ -1,0 +1,5 @@
+/* Global layout overrides for full-screen app experience */
+
+#root {
+  min-height: 100vh;
+}
