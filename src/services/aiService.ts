@@ -67,8 +67,8 @@ async function callOpenRouter(prompt: string): Promise<string> {
   });
 
   if (error) {
-    console.error('Edge Function error:', error);
-    throw new Error(`AI Error: ${error.message}`);
+    console.error('Edge Function error full details:', error);
+    throw new Error(`AI Error: ${error.message || 'Unknown error'}`);
   }
 
   if (!data || !data.choices?.[0]?.message?.content) {

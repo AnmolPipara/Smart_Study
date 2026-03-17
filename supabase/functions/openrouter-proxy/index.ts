@@ -42,14 +42,23 @@ serve(async (req: Request) => {
     }
 
     if (!OPENROUTER_API_KEY) {
-      throw new Error("OPENROUTER_API_KEY not set.");
+      console.error("OPENROUTER_API_KEY is not defined in environment variables");
+      return new Response(JSON.stringify({ error: "Server configuration error: API key missing" }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
     const { topic, model = "openai/gpt-4o-mini" } = await req.json();
 
     if (!topic) {
-      throw new Error("Topic is required.");
+      return new Response(JSON.stringify({ error: "Topic is required" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
+
+    console.log(`Calling OpenRouter with model: ${model}`);
 
     const response = await fetch(OPENROUTER_URL, {
       method: "POST",
@@ -75,11 +84,25 @@ serve(async (req: Request) => {
     });
 
     if (!response.ok) {
-      const err = await response.text();
-      throw new Error(err);
+      const errorText = await response.text();
+      console.error(`OpenRouter API error (${response.status}):`, errorText);
+      
+      let errorMessage = "AI Provider Error";
+      try {
+        const errorJson = JSON.parse(errorText);
+        errorMessage = errorJson.error?.message || errorMessage;
+      } catch {
+        errorMessage = errorText || errorMessage;
+      }
+
+      return new Response(JSON.stringify({ error: errorMessage }), {
+        status: response.status,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
     const data = await response.json();
+    console.log("OpenRouter response received successfully");
 
     return new Response(JSON.stringify(data), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -88,11 +111,11 @@ serve(async (req: Request) => {
 
   } catch (err) {
     const error = err as Error;
-    console.error("Proxy Error:", error.message);
+    console.error("Proxy Exception:", error.message);
 
-    return new Response(JSON.stringify({ error: error.message }), {
+    return new Response(JSON.stringify({ error: "Internal Server Error", details: error.message }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 400,
+      status: 500,
     });
   }
 });
