@@ -63,12 +63,33 @@ async function callOpenRouter(prompt: string): Promise<string> {
     headers: {
       Authorization: `Bearer ${session.access_token}`,
     },
-    body: { topic: prompt },
+    body: { prompt },
   });
 
   if (error) {
-    console.error('Edge Function error full details:', error);
-    throw new Error(`AI Error: ${error.message || 'Unknown error'}`);
+    // Supabase returns a generic message for non-2xx responses; surface details when available.
+    const anyErr = error as unknown as { message?: string; context?: unknown };
+    console.error('Edge Function error full details:', anyErr);
+
+    let details = '';
+    try {
+      // @ts-expect-error - context shape depends on runtime
+      const ctx = anyErr?.context;
+      // @ts-expect-error - response may exist on context
+      const body = ctx?.response?.body;
+      if (typeof body === 'string') details = body;
+      // @ts-expect-error - response json may exist on context
+      if (!details && typeof ctx?.response?.json === 'function') {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const j = await ctx.response.json();
+        details = JSON.stringify(j);
+      }
+    } catch {
+      // ignore
+    }
+
+    const msg = anyErr?.message || 'Unknown error';
+    throw new Error(`AI Error: ${details ? `${msg} — ${details}` : msg}`);
   }
 
   if (!data || !data.choices?.[0]?.message?.content) {

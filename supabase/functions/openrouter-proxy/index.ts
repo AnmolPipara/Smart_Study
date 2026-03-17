@@ -11,6 +11,7 @@ const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
 serve(async (req: Request) => {
@@ -49,10 +50,19 @@ serve(async (req: Request) => {
       });
     }
 
-    const { topic, model = "openai/gpt-4o-mini" } = await req.json();
+    let body: unknown = null;
+    try {
+      body = await req.json();
+    } catch {
+      body = null;
+    }
 
-    if (!topic) {
-      return new Response(JSON.stringify({ error: "Topic is required" }), {
+    const parsed = (body ?? {}) as { prompt?: string; topic?: string; model?: string };
+    const prompt = (parsed.prompt ?? parsed.topic ?? "").trim();
+    const model = parsed.model || "openai/gpt-4o-mini";
+
+    if (!prompt) {
+      return new Response(JSON.stringify({ error: "Prompt is required" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
@@ -76,7 +86,7 @@ serve(async (req: Request) => {
           },
           {
             role: "user",
-            content: topic,
+            content: prompt,
           },
         ],
         temperature: 0.4,
@@ -95,7 +105,7 @@ serve(async (req: Request) => {
         errorMessage = errorText || errorMessage;
       }
 
-      return new Response(JSON.stringify({ error: errorMessage }), {
+      return new Response(JSON.stringify({ error: errorMessage, status: response.status }), {
         status: response.status,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
