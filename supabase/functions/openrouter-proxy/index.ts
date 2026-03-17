@@ -1,7 +1,11 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js";
 
 const OPENROUTER_API_KEY = Deno.env.get("OPENROUTER_API_KEY");
+const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
+const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
+
 const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
 
 const corsHeaders = {
@@ -10,26 +14,41 @@ const corsHeaders = {
 };
 
 serve(async (req: Request) => {
-  // Handle CORS preflight
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
 
   try {
-    // SECURITY: Ensure the user is authenticated with Supabase
+    // 🔐 REQUIRE AUTH
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
-      throw new Error("Missing Authorization header. You must be logged in.");
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: corsHeaders,
+      });
+    }
+
+    const token = authHeader.replace("Bearer ", "");
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const { data: userData, error: userError } = await supabase.auth.getUser(token);
+
+    if (userError || !userData?.user) {
+      return new Response(JSON.stringify({ error: "Invalid token" }), {
+        status: 401,
+        headers: corsHeaders,
+      });
     }
 
     if (!OPENROUTER_API_KEY) {
-      throw new Error("OPENROUTER_API_KEY not set in Supabase secrets.");
+      throw new Error("OPENROUTER_API_KEY not set.");
     }
 
-    const { systemPrompt, userPrompt, model = "openai/gpt-4o-mini" } = await req.json();
+    const { topic, model = "openai/gpt-4o-mini" } = await req.json();
 
-    if (!systemPrompt || !userPrompt) {
-      throw new Error("systemPrompt and userPrompt are required.");
+    if (!topic) {
+      throw new Error("Topic is required.");
     }
 
     const response = await fetch(OPENROUTER_URL, {
@@ -42,8 +61,14 @@ serve(async (req: Request) => {
       body: JSON.stringify({
         model,
         messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userPrompt },
+          {
+            role: "system",
+            content: "You are a helpful AI tutor. Always respond in JSON format.",
+          },
+          {
+            role: "user",
+            content: topic,
+          },
         ],
         temperature: 0.4,
       }),
@@ -51,7 +76,7 @@ serve(async (req: Request) => {
 
     if (!response.ok) {
       const err = await response.text();
-      throw new Error(`OpenRouter API Error: ${err}`);
+      throw new Error(err);
     }
 
     const data = await response.json();
@@ -64,6 +89,7 @@ serve(async (req: Request) => {
   } catch (err) {
     const error = err as Error;
     console.error("Proxy Error:", error.message);
+
     return new Response(JSON.stringify({ error: error.message }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 400,
