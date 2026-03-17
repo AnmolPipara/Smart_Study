@@ -59,8 +59,11 @@ async function callOpenRouter(prompt: string): Promise<string> {
     throw new Error("User not logged in. Please login first.");
   }
 
-  // Let supabase-js attach the Authorization header for the current session.
   const { data, error } = await supabase.functions.invoke('openrouter-proxy', {
+    // IMPORTANT: With "Verify JWT with legacy secret" OFF, this should be the user's access token.
+    headers: {
+      Authorization: `Bearer ${session.access_token}`,
+    },
     body: { prompt },
   });
 
@@ -89,7 +92,7 @@ async function callOpenRouter(prompt: string): Promise<string> {
     const msg = anyErr?.message || 'Unknown error';
     const pretty =
       details && details.includes('Unauthorized')
-        ? 'Unauthorized (401). Please log out, clear site data, log in again, then retry.'
+        ? 'Unauthorized (401). In Supabase Edge Function settings, turn OFF “Verify JWT with legacy secret”, then redeploy. After that, log out, clear site data, log in again, and retry.'
         : undefined;
     throw new Error(`AI Error: ${pretty ?? (details ? `${msg} — ${details}` : msg)}`);
   }
