@@ -59,10 +59,8 @@ async function callOpenRouter(prompt: string): Promise<string> {
     throw new Error("User not logged in. Please login first.");
   }
 
+  // Let supabase-js attach the Authorization header for the current session.
   const { data, error } = await supabase.functions.invoke('openrouter-proxy', {
-    headers: {
-      Authorization: `Bearer ${session.access_token}`,
-    },
     body: { prompt },
   });
 
@@ -89,7 +87,11 @@ async function callOpenRouter(prompt: string): Promise<string> {
     }
 
     const msg = anyErr?.message || 'Unknown error';
-    throw new Error(`AI Error: ${details ? `${msg} — ${details}` : msg}`);
+    const pretty =
+      details && details.includes('Unauthorized')
+        ? 'Unauthorized (401). Please log out, clear site data, log in again, then retry.'
+        : undefined;
+    throw new Error(`AI Error: ${pretty ?? (details ? `${msg} — ${details}` : msg)}`);
   }
 
   if (!data || !data.choices?.[0]?.message?.content) {
