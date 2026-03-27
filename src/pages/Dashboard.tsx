@@ -281,6 +281,7 @@ const Dashboard = () => {
                   tasks={tasks}
                   selectedDate={selectedDate}
                   onToggle={handleToggle}
+                  onDelete={handleDelete}
                   onEdit={handleEdit}
                 />
               )}
@@ -324,6 +325,7 @@ const Dashboard = () => {
           onSubmit={handleAddTask}
           onClose={closeForm}
           editTask={editingTask}
+          onDelete={handleDelete}
         />
       )}
       <AiPlannerDialog open={showAiPlanner} onClose={() => setShowAiPlanner(false)} />

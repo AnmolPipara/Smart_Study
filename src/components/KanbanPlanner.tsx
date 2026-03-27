@@ -1,6 +1,6 @@
 import { StudyTask } from '@/types/study';
 import { format, isToday } from 'date-fns';
-import { CheckCircle2, ListTodo, SunMedium } from 'lucide-react';
+import { CheckCircle2, ListTodo, SunMedium, Trash2 } from 'lucide-react';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import { useCallback } from 'react';
 
@@ -109,7 +109,7 @@ const KanbanPlanner = ({ tasks, onToggle, onDelete, onEdit }: KanbanPlannerProps
                                 {...provided.draggableProps}
                                 {...provided.dragHandleProps}
                                 className={[
-                                  'w-full text-left rounded-lg p-3 text-xs transition-all shadow-card border border-[#3D2D6A] bg-[#1E1535] hover:bg-[#261B45] cursor-grab active:cursor-grabbing',
+                                  'group w-full text-left rounded-lg p-3 text-xs transition-all shadow-card border border-[#3D2D6A] bg-[#1E1535] hover:bg-[#261B45] cursor-grab active:cursor-grabbing',
                                   snapshot.isDragging ? 'ring-2 ring-primary shadow-lg rotate-1 scale-105' : '',
                                 ].join(' ')}
                                 onClick={() => onEdit(task)}
@@ -118,20 +118,33 @@ const KanbanPlanner = ({ tasks, onToggle, onDelete, onEdit }: KanbanPlannerProps
                                   <p className="font-semibold truncate text-foreground">
                                     {task.title}
                                   </p>
-                                  <button
-                                    type="button"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      onToggle(task.id);
-                                    }}
-                                    className="shrink-0"
-                                  >
-                                    {task.completed ? (
-                                      <CheckCircle2 className="w-4 h-4 text-[#22C55E]" />
-                                    ) : (
-                                      <span className="w-4 h-4 inline-block rounded-full border border-[#7C3AED]/60" />
-                                    )}
-                                  </button>
+                                  <div className="flex items-center gap-1.5 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <button
+                                      type="button"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        onDelete(task.id);
+                                      }}
+                                      className="p-1 hover:bg-destructive/20 text-muted-foreground hover:text-destructive rounded transition-colors"
+                                      title="Delete Task"
+                                    >
+                                      <Trash2 className="w-3.5 h-3.5" />
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        onToggle(task.id);
+                                      }}
+                                      className="p-1 rounded opacity-100! hover:bg-white/10 transition-colors"
+                                    >
+                                      {task.completed ? (
+                                        <CheckCircle2 className="w-4 h-4 text-[#22C55E]" />
+                                      ) : (
+                                        <span className="w-4 h-4 inline-block rounded-full border border-[#7C3AED]/60" />
+                                      )}
+                                    </button>
+                                  </div>
                                 </div>
                                 <p className="text-[11px] text-muted-foreground mb-1">
                                   {task.subject}

@@ -1,10 +1,12 @@
 import { StudyTask } from '@/types/study';
 import { format } from 'date-fns';
+import { Trash2 } from 'lucide-react';
 
 interface TimelinePlannerProps {
   tasks: StudyTask[];
   selectedDate: Date;
   onToggle: (id: string) => void;
+  onDelete: (id: string) => void;
   onEdit: (task: StudyTask) => void;
 }
 
@@ -12,6 +14,7 @@ const TimelinePlanner = ({
   tasks,
   selectedDate,
   onToggle,
+  onDelete,
   onEdit,
 }: TimelinePlannerProps) => {
   const dateStr = format(selectedDate, 'yyyy-MM-dd');
@@ -97,14 +100,27 @@ const TimelinePlanner = ({
                             }`}
                       </p>
                     </div>
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onToggle(task.id);
-                      }}
-                      className="ml-2 w-4 h-4 rounded-full border border-slate-900/40 bg-white/60 group-hover:bg-white"
-                    />
+                    <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onDelete(task.id);
+                        }}
+                        className="p-0.5 hover:bg-slate-900/10 text-slate-900/60 hover:text-slate-900 rounded transition-colors"
+                        title="Delete Task"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onToggle(task.id);
+                        }}
+                        className="ml-1 w-4 h-4 rounded-full border border-slate-900/40 bg-white/60 group-hover:bg-white transition-colors opacity-100!"
+                      />
+                    </div>
                   </div>
                 </div>
               </button>

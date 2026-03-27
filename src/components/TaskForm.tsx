@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import { StudyTask, Priority } from '@/types/study';
-import { X } from 'lucide-react';
+import { X, Trash2 } from 'lucide-react';
 import CircularTimePicker from './CircularTimePicker';
 interface TaskFormProps {
   onSubmit: (task: StudyTask) => void;
   onClose: () => void;
   editTask?: StudyTask | null;
+  onDelete?: (id: string) => void;
 }
 
-const TaskForm = ({ onSubmit, onClose, editTask }: TaskFormProps) => {
+const TaskForm = ({ onSubmit, onClose, editTask, onDelete }: TaskFormProps) => {
   const [title, setTitle] = useState(editTask?.title || '');
   const [subject, setSubject] = useState(editTask?.subject || '');
   const [priority, setPriority] = useState<Priority>(editTask?.priority || 'medium');
@@ -126,12 +127,24 @@ const TaskForm = ({ onSubmit, onClose, editTask }: TaskFormProps) => {
             </div>
           </div>
 
-          <button
-            type="submit"
-            className="w-full bg-primary text-primary-foreground rounded-lg py-2.5 text-sm font-semibold hover:opacity-90 transition-opacity glow-primary"
-          >
-            {editTask ? 'Update Task' : 'Add Task'}
-          </button>
+          <div className="flex gap-3 mt-6">
+            <button
+              type="submit"
+              className="flex-1 bg-primary text-primary-foreground rounded-lg py-2.5 text-sm font-semibold hover:opacity-90 transition-opacity glow-primary"
+            >
+              {editTask ? 'Update Task' : 'Add Task'}
+            </button>
+            {editTask && onDelete && (
+              <button
+                type="button"
+                onClick={() => { onDelete(editTask.id); onClose(); }}
+                className="px-4 bg-destructive/10 text-destructive rounded-lg hover:bg-destructive text-sm font-semibold hover:text-destructive-foreground transition-colors border border-destructive/20"
+                title="Delete Task"
+              >
+                <Trash2 className="w-5 h-5" />
+              </button>
+            )}
+          </div>
         </form>
       </div>
     </div>
