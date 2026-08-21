@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTaskManager } from '@/hooks/useTaskManager';
 import { useNoteManager } from '@/hooks/useNoteManager';
@@ -19,10 +19,14 @@ import TaskForm from '@/components/TaskForm';
 import DashboardSkeleton from '@/components/DashboardSkeleton';
 import PomodoroTimer from '@/components/PomodoroTimer';
 import MobileBottomNav from '@/components/MobileBottomNav';
+import MasteryPanel from '@/components/MasteryPanel';
+import RevisionPanel from '@/components/RevisionPanel';
+import TodayRecommendation from '@/components/TodayRecommendation';
+import { useMastery } from '@/hooks/useMastery';
 import { useDeadlineNotifications } from '@/hooks/useDeadlineNotifications';
 import { exportTasksAsCSV } from '@/utils/exportData';
-import { Plus, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Menu, LayoutList, BookOpen, BarChart2, Download } from 'lucide-react';
-import { useState } from 'react';
+import { Plus, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Menu, LayoutList, BookOpen, BarChart2, Download, Target } from 'lucide-react';
+
 
 const Dashboard = () => {
   const { user } = useAuth();
@@ -44,6 +48,7 @@ const Dashboard = () => {
     navCollapsed, toggleNav, navigateDate, goToToday,
   } = useDashboardNav();
 
+  const mastery = useMastery();
   const [showAiPlanner, setShowAiPlanner] = useState(false);
 
   // Enable deadline notifications
@@ -113,6 +118,18 @@ const Dashboard = () => {
                   }`}
                 >
                   <BarChart2 className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setSection('mastery'); toggleNav(); }}
+                  title="Mastery"
+                  className={`w-full flex items-center justify-center p-2 rounded-xl transition-all ${
+                    section === 'mastery'
+                      ? 'bg-gradient-to-r from-primary to-[#C084FC] text-primary-foreground'
+                      : 'bg-secondary/60 text-muted-foreground hover:bg-secondary hover:text-foreground'
+                  }`}
+                >
+                  <Target className="w-4 h-4" />
                 </button>
               </>
             ) : (
@@ -186,6 +203,17 @@ const Dashboard = () => {
                   }`}
                 >
                   Analytics
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSection('mastery')}
+                  className={`relative w-full text-left text-sm px-3 py-2.5 rounded-xl transition-all duration-300 ${
+                    section === 'mastery'
+                      ? 'bg-gradient-to-r from-primary to-[#C084FC] text-primary-foreground shadow-card'
+                      : 'bg-secondary/60 text-muted-foreground hover:text-foreground hover:bg-secondary'
+                  }`}
+                >
+                  Mastery
                 </button>
               </>
             )}
@@ -287,9 +315,29 @@ const Dashboard = () => {
               )}
             </div>
             <div className="space-y-4">
+              <TodayRecommendation subjectsWithMastery={mastery.subjectsWithMastery} revisionsDue={mastery.revisionsDue} />
               <PomodoroTimer />
               <StudyProgress tasks={tasks} />
+              <RevisionPanel revisionsDue={mastery.revisionsDue} onProcessRevision={mastery.processRevision} isProcessing={mastery.isProcessingRevision} />
               <DeadlinePanel tasks={tasks} />
+            </div>
+          </div>
+        )}
+
+        {section === 'mastery' && (
+          <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] gap-6">
+            <MasteryPanel
+              subjectsWithMastery={mastery.subjectsWithMastery}
+              onAddSubject={mastery.addSubject}
+              onAddTopic={mastery.addTopic}
+              onRemoveSubject={mastery.removeSubject}
+              onRemoveTopic={mastery.removeTopic}
+              loading={mastery.loading}
+            />
+            <div className="space-y-4">
+              <RevisionPanel revisionsDue={mastery.revisionsDue} onProcessRevision={mastery.processRevision} isProcessing={mastery.isProcessingRevision} />
+              <TodayRecommendation subjectsWithMastery={mastery.subjectsWithMastery} revisionsDue={mastery.revisionsDue} />
+              <PomodoroTimer />
             </div>
           </div>
         )}
