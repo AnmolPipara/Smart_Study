@@ -54,16 +54,22 @@ export function useNoteManager(userId: string | undefined) {
 
   const handleCreateNote = useCallback((parentId: string | null) => {
     if (!userId) return;
-    const baseSubject = parentId
-      ? notes.find(n => n.id === parentId)?.subject ?? 'General'
-      : 'General';
+    // If parentId looks like a subject folder (starts with 'subject-'), extract the subject name
+    let baseSubject = 'General';
+    let actualParentId: string | null = parentId;
+    if (parentId?.startsWith('subject-')) {
+      baseSubject = parentId.replace('subject-', '');
+      actualParentId = null;
+    } else if (parentId) {
+      baseSubject = notes.find(n => n.id === parentId)?.subject ?? 'General';
+    }
     const draft: StudyNote = {
       id: '',
       userId,
       subject: baseSubject,
       title: 'New Note',
       content: '',
-      parentId,
+      parentId: actualParentId,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
@@ -75,20 +81,39 @@ export function useNoteManager(userId: string | undefined) {
   }, [deleteMutation]);
 
   const subjectTree: NoteSubjectNode[] = useMemo(() => {
+    // Group notes by subject, then nest children
+    const subjectMap = new Map<string, NoteSubjectNode>();
     const byId = new Map<string, NoteSubjectNode>();
-    const roots: NoteSubjectNode[] = [];
+
+    // First pass: create all nodes
     notes.forEach(note => {
-      byId.set(note.id, { id: note.id, name: note.title || note.subject, children: [] });
+      const node: NoteSubjectNode = { id: note.id, name: note.title || 'Untitled', children: [] };
+      byId.set(note.id, node);
     });
+
+    // Second pass: build tree - notes with parentId go under parent, others go under subject folder
     notes.forEach(note => {
       const node = byId.get(note.id)!;
       if (note.parentId && byId.has(note.parentId)) {
+        // This is a child note - attach to parent
         byId.get(note.parentId)!.children!.push(node);
       } else {
-        roots.push(node);
+        // This is a root note - attach to subject folder
+        const subjectName = note.subject || 'General';
+        if (!subjectMap.has(subjectName)) {
+          subjectMap.set(subjectName, {
+            id: `subject-${subjectName}`,
+            name: subjectName,
+            children: [],
+            isSubject: true,
+          });
+        }
+        subjectMap.get(subjectName)!.children!.push(node);
       }
     });
-    return roots;
+
+    // Sort subjects alphabetically
+    return Array.from(subjectMap.values()).sort((a, b) => a.name.localeCompare(b.name));
   }, [notes]);
 
   const selectedNote = useMemo(

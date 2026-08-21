@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { generateStudyPlan, AiStudyPlan } from '@/services/aiService';
 import { useMastery } from '@/hooks/useMastery';
-import { X } from 'lucide-react';
+import { X, ChevronDown, Check } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface AiPlannerDialogProps {
@@ -14,10 +14,44 @@ const AiPlannerDialog = ({ open, onClose }: AiPlannerDialogProps) => {
   const [examName, setExamName] = useState('');
   const [planDays, setPlanDays] = useState('10');
   const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
-  const [topics, setTopics] = useState('');
+  const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
+  const [subjectDropOpen, setSubjectDropOpen] = useState(false);
+  const [topicDropOpen, setTopicDropOpen] = useState(false);
   const [difficulty, setDifficulty] = useState<'easy' | 'medium' | 'hard'>('medium');
   const [loading, setLoading] = useState(false);
   const [plan, setPlan] = useState<AiStudyPlan | null>(null);
+  const subjectRef = useRef<HTMLDivElement>(null);
+  const topicRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdowns on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (subjectRef.current && !subjectRef.current.contains(e.target as Node)) setSubjectDropOpen(false);
+      if (topicRef.current && !topicRef.current.contains(e.target as Node)) setTopicDropOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  // Get topics for selected subjects
+  const topicsForSelectedSubjects = useMemo(() => {
+    if (selectedSubjects.length === 0) return [];
+    const result: { name: string; subjectName: string; mastery: number }[] = [];
+    subjectsWithMastery.forEach(({ subject, topics }) => {
+      if (selectedSubjects.includes(subject.name)) {
+        topics.forEach(({ topic, mastery }) => {
+          result.push({ name: topic.name, subjectName: subject.name, mastery: mastery?.score ?? 0 });
+        });
+      }
+    });
+    return result;
+  }, [selectedSubjects, subjectsWithMastery]);
+
+  // Clear topics when subjects change if they're no longer valid
+  useEffect(() => {
+    const validNames = new Set(topicsForSelectedSubjects.map(t => t.name));
+    setSelectedTopics(prev => prev.filter(t => validNames.has(t)));
+  }, [topicsForSelectedSubjects]);
 
   if (!open) return null;
 
@@ -32,11 +66,12 @@ const AiPlannerDialog = ({ open, onClose }: AiPlannerDialogProps) => {
     setPlan(null);
     try {
       const subjectNames = selectedSubjects.join(', ');
+      const topicNames = selectedTopics.join(', ');
       const result = await generateStudyPlan({
         examName,
         days: daysNum,
         subjects: subjectNames,
-        topics,
+        topics: topicNames,
         difficulty,
         masteryData: subjectsWithMastery,
         revisionsDue: revisionsDue.length,
@@ -111,12 +146,40 @@ const AiPlannerDialog = ({ open, onClose }: AiPlannerDialogProps) => {
               </div>
             </div>
 
-            <div>
+            <div ref={subjectRef} className="relative">
               <label className="text-xs font-medium text-muted-foreground mb-1.5 block">
-                Subjects {subjectsWithMastery.length > 0 ? '(from your mastery list)' : ''}
+                Subjects {subjectsWithMastery.length > 0 ? '(from mastery)' : ''}
               </label>
-              {subjectsWithMastery.length > 0 ? (
-                <div className="flex flex-wrap gap-1.5">
+              <button
+                type="button"
+                onClick={() => setSubjectDropOpen(!subjectDropOpen)}
+                className="w-full bg-secondary rounded-lg px-3 py-2.5 text-xs border border-border/50 focus:border-primary/60 focus:outline-none flex items-center justify-between"
+              >
+                <span className={selectedSubjects.length === 0 ? 'text-muted-foreground' : ''}>
+                  {selectedSubjects.length === 0
+                    ? 'Select subjects...'
+                    : `${selectedSubjects.length} selected`}
+                </span>
+                <ChevronDown className={`w-3.5 h-3.5 text-muted-foreground transition-transform ${subjectDropOpen ? 'rotate-180' : ''}`} />
+              </button>
+              {subjectDropOpen && (
+                <div className="absolute z-50 mt-1 w-full bg-secondary border border-border/60 rounded-lg shadow-lg max-h-48 overflow-auto">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (selectedSubjects.length === subjectsWithMastery.length) {
+                        setSelectedSubjects([]);
+                      } else {
+                        setSelectedSubjects(subjectsWithMastery.map(s => s.subject.name));
+                      }
+                    }}
+                    className="w-full px-3 py-2 text-xs text-left hover:bg-primary/10 flex items-center gap-2 border-b border-border/40 font-semibold text-[#C084FC]"
+                  >
+                    <div className={`w-3.5 h-3.5 rounded border flex items-center justify-center ${selectedSubjects.length === subjectsWithMastery.length && subjectsWithMastery.length > 0 ? 'bg-[#7C3AED] border-[#7C3AED]' : 'border-muted-foreground/50'}`}>
+                      {selectedSubjects.length === subjectsWithMastery.length && subjectsWithMastery.length > 0 && <Check className="w-2.5 h-2.5 text-white" />}
+                    </div>
+                    Select All
+                  </button>
                   {subjectsWithMastery.map(({ subject, overallScore }) => {
                     const isSelected = selectedSubjects.includes(subject.name);
                     return (
@@ -125,53 +188,106 @@ const AiPlannerDialog = ({ open, onClose }: AiPlannerDialogProps) => {
                         type="button"
                         onClick={() => {
                           setSelectedSubjects(prev =>
-                            isSelected
-                              ? prev.filter(s => s !== subject.name)
-                              : [...prev, subject.name]
+                            isSelected ? prev.filter(s => s !== subject.name) : [...prev, subject.name]
                           );
                         }}
-                        className={`px-2.5 py-1.5 rounded-lg text-[11px] font-medium border transition-all ${
-                          isSelected
-                            ? 'bg-[#7C3AED]/20 border-[#7C3AED]/60 text-[#C084FC]'
-                            : 'bg-secondary/50 border-border/50 text-muted-foreground hover:border-primary/40'
-                        }`}
+                        className="w-full px-3 py-2 text-xs text-left hover:bg-primary/10 flex items-center gap-2"
                       >
-                        {subject.name}
-                        <span className="ml-1 text-[10px] opacity-70">{overallScore}%</span>
+                        <div className={`w-3.5 h-3.5 rounded border flex items-center justify-center ${isSelected ? 'bg-[#7C3AED] border-[#7C3AED]' : 'border-muted-foreground/50'}`}>
+                          {isSelected && <Check className="w-2.5 h-2.5 text-white" />}
+                        </div>
+                        <span className="flex-1 truncate">{subject.name}</span>
+                        <span className="text-[10px] text-muted-foreground">{overallScore}%</span>
+                      </button>
+                    );
+                  })}
+                  {subjectsWithMastery.length === 0 && (
+                    <p className="px-3 py-2 text-[10px] text-muted-foreground/70">
+                      Add subjects in Mastery section first.
+                    </p>
+                  )}
+                </div>
+              )}
+              {selectedSubjects.length > 0 && (
+                <div className="flex flex-wrap gap-1 mt-1.5">
+                  {selectedSubjects.map(name => (
+                    <span key={name} className="px-1.5 py-0.5 rounded bg-[#7C3AED]/15 text-[#C084FC] text-[10px] font-medium flex items-center gap-1">
+                      {name}
+                      <button type="button" onClick={() => setSelectedSubjects(prev => prev.filter(s => s !== name))} className="hover:text-white">×</button>
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div ref={topicRef} className="relative">
+              <label className="text-xs font-medium text-muted-foreground mb-1.5 block">
+                Topics {selectedSubjects.length > 0 ? `(${topicsForSelectedSubjects.length} available)` : '(select subjects first)'}
+              </label>
+              <button
+                type="button"
+                onClick={() => setTopicDropOpen(!topicDropOpen)}
+                disabled={topicsForSelectedSubjects.length === 0}
+                className="w-full bg-secondary rounded-lg px-3 py-2.5 text-xs border border-border/50 focus:border-primary/60 focus:outline-none flex items-center justify-between disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <span className={selectedTopics.length === 0 ? 'text-muted-foreground' : ''}>
+                  {selectedTopics.length === 0
+                    ? 'Select topics...'
+                    : `${selectedTopics.length} selected`}
+                </span>
+                <ChevronDown className={`w-3.5 h-3.5 text-muted-foreground transition-transform ${topicDropOpen ? 'rotate-180' : ''}`} />
+              </button>
+              {topicDropOpen && topicsForSelectedSubjects.length > 0 && (
+                <div className="absolute z-50 mt-1 w-full bg-secondary border border-border/60 rounded-lg shadow-lg max-h-48 overflow-auto">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (selectedTopics.length === topicsForSelectedSubjects.length) {
+                        setSelectedTopics([]);
+                      } else {
+                        setSelectedTopics(topicsForSelectedSubjects.map(t => t.name));
+                      }
+                    }}
+                    className="w-full px-3 py-2 text-xs text-left hover:bg-primary/10 flex items-center gap-2 border-b border-border/40 font-semibold text-[#C084FC]"
+                  >
+                    <div className={`w-3.5 h-3.5 rounded border flex items-center justify-center ${selectedTopics.length === topicsForSelectedSubjects.length && topicsForSelectedSubjects.length > 0 ? 'bg-[#7C3AED] border-[#7C3AED]' : 'border-muted-foreground/50'}`}>
+                      {selectedTopics.length === topicsForSelectedSubjects.length && topicsForSelectedSubjects.length > 0 && <Check className="w-2.5 h-2.5 text-white" />}
+                    </div>
+                    Select All
+                  </button>
+                  {topicsForSelectedSubjects.map(({ name, subjectName, mastery }) => {
+                    const isSelected = selectedTopics.includes(name);
+                    return (
+                      <button
+                        key={`${subjectName}-${name}`}
+                        type="button"
+                        onClick={() => {
+                          setSelectedTopics(prev =>
+                            isSelected ? prev.filter(t => t !== name) : [...prev, name]
+                          );
+                        }}
+                        className="w-full px-3 py-2 text-xs text-left hover:bg-primary/10 flex items-center gap-2"
+                      >
+                        <div className={`w-3.5 h-3.5 rounded border flex items-center justify-center ${isSelected ? 'bg-[#7C3AED] border-[#7C3AED]' : 'border-muted-foreground/50'}`}>
+                          {isSelected && <Check className="w-2.5 h-2.5 text-white" />}
+                        </div>
+                        <span className="flex-1 truncate">{name}</span>
+                        <span className="text-[10px] text-muted-foreground">{mastery}%</span>
                       </button>
                     );
                   })}
                 </div>
-              ) : (
-                <p className="text-[10px] text-muted-foreground/70">
-                  Add subjects in the Mastery section first, or type them manually below.
-                </p>
               )}
-              {subjectsWithMastery.length > 0 && (
-                <input
-                  value={selectedSubjects.filter(s => !subjectsWithMastery.some(({ subject }) => subject.name === s)).join(', ')}
-                  onChange={(e) => {
-                    const manual = e.target.value.split(',').map(s => s.trim()).filter(Boolean);
-                    const existing = selectedSubjects.filter(s => subjectsWithMastery.some(({ subject }) => subject.name === s));
-                    setSelectedSubjects([...existing, ...manual]);
-                  }}
-                  placeholder="Or type additional subjects..."
-                  className="w-full mt-1.5 bg-secondary rounded-lg px-3 py-2 text-xs border border-border/50 focus:border-primary/60 focus:outline-none"
-                />
+              {selectedTopics.length > 0 && (
+                <div className="flex flex-wrap gap-1 mt-1.5">
+                  {selectedTopics.map(name => (
+                    <span key={name} className="px-1.5 py-0.5 rounded bg-green-500/15 text-green-400 text-[10px] font-medium flex items-center gap-1">
+                      {name}
+                      <button type="button" onClick={() => setSelectedTopics(prev => prev.filter(t => t !== name))} className="hover:text-white">×</button>
+                    </span>
+                  ))}
+                </div>
               )}
-            </div>
-
-            <div>
-              <label className="text-xs font-medium text-muted-foreground mb-1.5 block">
-                Topics / chapters
-              </label>
-              <textarea
-                value={topics}
-                onChange={(e) => setTopics(e.target.value)}
-                placeholder="Deadlock, Banker Algorithm, CPU Scheduling, Memory Management, ..."
-                rows={4}
-                className="w-full bg-secondary rounded-lg px-3 py-2.5 text-xs border border-border/50 focus:border-primary/60 focus:outline-none resize-none"
-              />
             </div>
 
             <button

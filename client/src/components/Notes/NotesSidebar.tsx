@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { NotebookTabs, Plus, Menu, Trash2 } from 'lucide-react';
+import { NotebookTabs, Plus, Menu, Trash2, ChevronRight, ChevronDown, Folder, FileText } from 'lucide-react';
 
 export interface NoteSubjectNode {
   id: string;
   name: string;
   children?: NoteSubjectNode[];
+  isSubject?: boolean;
 }
 
 interface NotesSidebarProps {
@@ -23,43 +24,109 @@ const NotesSidebar = ({
   onDelete,
 }: NotesSidebarProps) => {
   const [collapsed, setCollapsed] = useState(false);
+  const [expandedSubjects, setExpandedSubjects] = useState<Set<string>>(new Set());
+  const [expandedNotes, setExpandedNotes] = useState<Set<string>>(new Set());
 
-  const renderNode = (node: NoteSubjectNode, depth = 0) => {
+  const toggleSubject = (id: string) => {
+    setExpandedSubjects(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  };
+
+  const toggleNote = (id: string) => {
+    setExpandedNotes(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  };
+
+  const renderNoteNode = (node: NoteSubjectNode, depth: number) => {
     const isSelected = node.id === selectedId;
+    const hasChildren = node.children && node.children.length > 0;
+    const isExpanded = expandedNotes.has(node.id);
     return (
-      <div key={node.id} className="mb-1 group">
+      <div key={node.id} className="group">
         <div
-          className={`w-full flex items-center justify-between text-left text-xs px-2 py-1.5 rounded-md ${
+          className={`w-full flex items-center text-left text-xs rounded-md transition-colors ${
             isSelected
               ? 'bg-[#7C3AED]/15 text-[#7C3AED] font-semibold'
               : 'hover:bg-secondary/80 text-muted-foreground'
-          }`}
-          style={{ paddingLeft: 8 + depth * 12 }}
+          }`
+          }
+          style={{ paddingLeft: 8 + depth * 14 }}
         >
+          {hasChildren ? (
+            <button type="button" onClick={() => toggleNote(node.id)} className="p-1 shrink-0">
+              {isExpanded ? <ChevronDown className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
+            </button>
+          ) : (
+            <span className="w-5 shrink-0 flex items-center justify-center">
+              <FileText className="w-3 h-3 opacity-50" />
+            </span>
+          )}
           <button
             type="button"
             onClick={() => onSelect(node.id)}
-            className="truncate flex-1 text-left"
+            className="flex-1 text-left py-1.5 truncate pr-1"
           >
             {node.name}
           </button>
-          {onDelete && (
+          {onDelete && !node.isSubject && (
             <button
               type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                onDelete(node.id);
-              }}
-              className="p-0.5 rounded opacity-0 group-hover:opacity-100 hover:bg-red-500/20 text-red-400 hover:text-red-300 transition-all"
+              onClick={(e) => { e.stopPropagation(); onDelete(node.id); }}
+              className="p-0.5 mr-1 rounded opacity-0 group-hover:opacity-100 hover:bg-red-500/20 text-red-400 transition-all shrink-0"
               title="Delete note"
             >
               <Trash2 className="w-3 h-3" />
             </button>
           )}
         </div>
-        {node.children && node.children.length > 0 && (
-          <div className="mt-0.5">
-            {node.children.map((child) => renderNode(child, depth + 1))}
+        {hasChildren && isExpanded && (
+          <div>
+            {node.children!.map(child => renderNoteNode(child, depth + 1))}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  const renderSubjectFolder = (node: NoteSubjectNode) => {
+    const isExpanded = expandedSubjects.has(node.id);
+    const childCount = node.children?.length ?? 0;
+    return (
+      <div key={node.id} className="mb-1">
+        <div className="w-full flex items-center text-left text-xs rounded-md hover:bg-secondary/60 text-foreground/90 font-medium transition-colors">
+          <button type="button" onClick={() => toggleSubject(node.id)} className="p-1 shrink-0">
+            {isExpanded ? <ChevronDown className="w-3.5 h-3.5 text-[#7C3AED]" /> : <ChevronRight className="w-3.5 h-3.5 text-muted-foreground" />}
+          </button>
+          <Folder className={`w-3.5 h-3.5 mr-1.5 shrink-0 ${isExpanded ? 'text-[#7C3AED]' : 'text-amber-500/70'}`} />
+          <button type="button" onClick={() => toggleSubject(node.id)} className="flex-1 text-left truncate py-1.5">
+            {node.name}
+          </button>
+          <span className="text-[10px] text-muted-foreground mr-2 shrink-0">{childCount}</span>
+          {onCreate && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                // Create a note under this subject - we need to find a root note in this subject to be the parent
+                const firstChild = node.children?.[0];
+                onCreate(firstChild?.id ?? null);
+              }}
+              className="p-0.5 mr-1 rounded opacity-0 group-hover:opacity-100 hover:bg-[#7C3AED]/20 text-[#7C3AED] transition-all shrink-0"
+              title="Add note to this subject"
+            >
+              <Plus className="w-3 h-3" />
+            </button>
+          )}
+        </div>
+        {isExpanded && node.children && node.children.length > 0 && (
+          <div className="ml-1">
+            {node.children.map(child => renderNoteNode(child, 0))}
           </div>
         )}
       </div>
@@ -105,11 +172,11 @@ const NotesSidebar = ({
         <div className="flex-1 overflow-auto px-2 py-2">
           {subjects.length === 0 ? (
             <p className="text-[11px] text-muted-foreground">
-              Start by creating a subject like <strong>Operating System</strong> or{' '}
-              <strong>Machine Learning</strong>.
+              Start by creating a note and setting its subject,
+              e.g. <strong>DBMS</strong> or <strong>Operating System</strong>.
             </p>
           ) : (
-            subjects.map((node) => renderNode(node))
+            subjects.map((node) => renderSubjectFolder(node))
           )}
         </div>
       )}

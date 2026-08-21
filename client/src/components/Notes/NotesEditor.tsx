@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { StudyNote } from '@/types/study';
-import { Bold, Code2, Heading, Image as ImageIcon, Italic, Sparkles, HelpCircle } from 'lucide-react';
+import { Bold, Code2, Heading, Image as ImageIcon, Italic, Sparkles, HelpCircle, FileText, ListOrdered } from 'lucide-react';
 import { generateQuestions, summarizeNoteContent, AiNoteSummary, AiQuestions } from '@/services/aiService';
 import { toast } from 'sonner';
 
@@ -27,6 +27,7 @@ const NotesEditor = ({ note, onChange }: NotesEditorProps) => {
   const [content, setContent] = useState(note?.content ?? defaultTemplate);
   const [summary, setSummary] = useState<AiNoteSummary | null>(null);
   const [questions, setQuestions] = useState<AiQuestions | null>(null);
+  const [activeTab, setActiveTab] = useState<'summary' | 'questions'>('summary');
   const [topic, setTopic] = useState('');
   const [difficulty, setDifficulty] = useState<'easy' | 'medium' | 'hard'>('medium');
   const [loadingSummary, setLoadingSummary] = useState(false);
@@ -66,6 +67,7 @@ const NotesEditor = ({ note, onChange }: NotesEditorProps) => {
     try {
       const result = await summarizeNoteContent(content);
       setSummary(result);
+      setActiveTab('summary');
     } catch (err: any) {
       console.error(err);
       toast.error(err.message || 'Failed to summarize note');
@@ -85,6 +87,7 @@ const NotesEditor = ({ note, onChange }: NotesEditorProps) => {
     try {
       const result = await generateQuestions({ topic: topicValue, difficulty });
       setQuestions(result);
+      setActiveTab('questions');
     } catch (err: any) {
       console.error(err);
       toast.error(err.message || 'Failed to generate questions');
@@ -222,6 +225,37 @@ const NotesEditor = ({ note, onChange }: NotesEditorProps) => {
           </button>
         </div>
 
+        {(summary || questions) && (
+          <div className="flex border-b border-border/30">
+            <button
+              type="button"
+              onClick={() => setActiveTab('summary')}
+              className={`flex-1 px-3 py-2 text-xs font-medium flex items-center justify-center gap-1.5 transition-colors ${
+                activeTab === 'summary'
+                  ? 'text-[#C084FC] border-b-2 border-[#7C3AED]'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              <FileText className="w-3 h-3" />
+              Summary
+              {summary && <span className="w-1.5 h-1.5 rounded-full bg-[#7C3AED] ml-0.5" />}
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab('questions')}
+              className={`flex-1 px-3 py-2 text-xs font-medium flex items-center justify-center gap-1.5 transition-colors ${
+                activeTab === 'questions'
+                  ? 'text-green-400 border-b-2 border-green-500'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              <ListOrdered className="w-3 h-3" />
+              Questions
+              {questions && <span className="w-1.5 h-1.5 rounded-full bg-green-500 ml-0.5" />}
+            </button>
+          </div>
+        )}
+
         <div className="flex-1 overflow-auto text-xs">
           {!summary && !questions && (
             <div className="px-3 py-4">
@@ -232,32 +266,30 @@ const NotesEditor = ({ note, onChange }: NotesEditorProps) => {
             </div>
           )}
 
-          {summary && (
-            <div className="px-3 py-2 border-b border-border/30">
-              <div className="flex items-center gap-1.5 mb-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-[#7C3AED]" />
-                <p className="font-semibold text-foreground text-xs">Summary</p>
-              </div>
-              <p className="text-muted-foreground leading-relaxed mb-2">{summary.summary}</p>
+          {summary && activeTab === 'summary' && (
+            <div className="px-3 py-3">
+              <p className="text-muted-foreground leading-relaxed mb-3">{summary.summary}</p>
               {summary.key_points.length > 0 && (
-                <div className="mt-2">
-                  <p className="font-semibold text-foreground mb-1">Key Points</p>
-                  <ul className="list-disc list-inside space-y-0.5 text-muted-foreground">
+                <div className="mb-3">
+                  <p className="font-semibold text-foreground mb-1.5">Key Points</p>
+                  <ul className="space-y-1">
                     {summary.key_points.map((kp) => (
-                      <li key={kp}>{kp}</li>
+                      <li key={kp} className="flex items-start gap-1.5 text-muted-foreground">
+                        <span className="text-[#7C3AED] mt-0.5">•</span>
+                        <span>{kp}</span>
+                      </li>
                     ))}
                   </ul>
                 </div>
               )}
               {summary.flashcards.length > 0 && (
-                <div className="mt-2">
-                  <p className="font-semibold text-foreground mb-1">Flashcards</p>
-                  <ul className="space-y-1">
+                <div>
+                  <p className="font-semibold text-foreground mb-1.5">Flashcards</p>
+                  <ul className="space-y-1.5">
                     {summary.flashcards.map((fc) => (
-                      <li key={fc.question} className="bg-background/40 rounded-md px-2 py-1.5 border border-border/30">
-                        <span className="font-semibold text-[#C084FC]">Q:</span> {fc.question}
-                        <br />
-                        <span className="font-semibold text-green-400">A:</span> {fc.answer}
+                      <li key={fc.question} className="bg-background/40 rounded-md px-2.5 py-2 border border-border/30">
+                        <p className="text-[#C084FC] font-medium mb-1">Q: {fc.question}</p>
+                        <p className="text-green-400">A: {fc.answer}</p>
                       </li>
                     ))}
                   </ul>
@@ -266,24 +298,29 @@ const NotesEditor = ({ note, onChange }: NotesEditorProps) => {
             </div>
           )}
 
-          {questions && (
-            <div className="px-3 py-2">
-              <div className="flex items-center gap-1.5 mb-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
-                <p className="font-semibold text-foreground text-xs">
-                  Practice Questions
-                  <span className="text-muted-foreground font-normal ml-1.5">
-                    {questions.topic} — {questions.difficulty}
-                  </span>
-                </p>
-              </div>
-              <ol className="list-decimal list-inside space-y-1.5 text-muted-foreground">
+          {questions && activeTab === 'questions' && (
+            <div className="px-3 py-3">
+              <p className="text-muted-foreground text-[10px] mb-2">
+                {questions.topic} — {questions.difficulty}
+              </p>
+              <ol className="list-decimal list-inside space-y-2 text-muted-foreground">
                 {questions.questions.map((q) => (
-                  <li key={q} className="bg-background/40 rounded-md px-2 py-1.5 border border-border/30">
+                  <li key={q} className="bg-background/40 rounded-md px-2.5 py-2 border border-border/30">
                     {q}
                   </li>
                 ))}
               </ol>
+            </div>
+          )}
+
+          {summary && activeTab === 'questions' && !questions && (
+            <div className="px-3 py-4 text-center">
+              <p className="text-muted-foreground/70">Generate questions to see them here.</p>
+            </div>
+          )}
+          {questions && activeTab === 'summary' && !summary && (
+            <div className="px-3 py-4 text-center">
+              <p className="text-muted-foreground/70">Summarize this note to see the summary here.</p>
             </div>
           )}
         </div>
