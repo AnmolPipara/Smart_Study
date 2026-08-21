@@ -90,7 +90,7 @@ async function callOpenRouter(prompt: string): Promise<{content: string; provide
   if (!OPENROUTER_API_KEY) throw new Error("OPENROUTER_API_KEY not configured");
   const response = await fetch(OPENROUTER_URL, {
     method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: "Bearer " + OPENROUTER_API_KEY, "X-Title": "Smart Study Planner" },
+    headers: { "Content-Type": "application/json", Authorization: "Bearer " + OPENROUTER_API_KEY, "X-Title": "Studora" },
     body: JSON.stringify({ model: "google/gemma-4-26b-a4b-it:free", messages: buildMessages(prompt), temperature: 0.4 }),
   });
   if (!response.ok) { const t = await response.text(); throw new Error("OpenRouter " + response.status + ": " + t); }

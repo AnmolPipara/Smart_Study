@@ -91,7 +91,7 @@ const Landing = () => {
               <AppLogo size={28} />
             </div>
             <span className="text-xl font-bold tracking-tight text-gray-900" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-              Smart Study Planner
+              Studora
             </span>
           </div>
 
@@ -320,7 +320,7 @@ const Landing = () => {
       {/* Footer */}
       <footer className="w-full border-t border-gray-200/60 py-8 mt-auto z-10 bg-white/50">
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between text-gray-400 text-sm">
-          <span>© {new Date().getFullYear()} Smart Study Planner. All rights reserved.</span>
+          <span>© {new Date().getFullYear()} Studora. All rights reserved.</span>
           <div className="flex items-center gap-6">
             <a href="#" className="hover:text-gray-600 transition-colors">Privacy</a>
             <a href="#" className="hover:text-gray-600 transition-colors">Terms</a>

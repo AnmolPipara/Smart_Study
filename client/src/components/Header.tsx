@@ -43,7 +43,7 @@ const Header = () => {
               <AppLogo size={28} />
             </div>
           <div>
-            <h1 className="text-lg font-bold tracking-tight">Smart Study Planner</h1>
+            <h1 className="text-lg font-bold tracking-tight">Studora</h1>
             <p className="text-[11px] text-muted-foreground">Plan smarter, study better</p>
           </div>
         </div>

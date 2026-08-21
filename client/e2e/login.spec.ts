@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test('has title', async ({ page }) => {
   await page.goto('/');
-  await expect(page).toHaveTitle(/Smart Study Planner/);
+  await expect(page).toHaveTitle(/Studora/);
 });
 
 test('can navigate to auth page', async ({ page }) => {
