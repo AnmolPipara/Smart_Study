@@ -156,22 +156,12 @@ const NotesSidebar = ({
           {/* Actions */}
           {!isRenaming && (
             <div className="flex items-center gap-0.5 mr-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
-              {isFolder && (
-                <button
-                  type="button"
-                  onClick={(e) => openCreateMenu(e, node.id)}
-                  className="p-0.5 rounded hover:bg-[#7C3AED]/20 text-[#7C3AED]"
-                  title="Add item inside"
-                >
-                  <Plus className="w-3 h-3" />
-                </button>
-              )}
-              {!node.isSubject && onDelete && (
+              {onDelete && (
                 <button
                   type="button"
                   onClick={(e) => { e.stopPropagation(); onDelete(node.id); }}
                   className="p-0.5 rounded hover:bg-red-500/20 text-red-400"
-                  title="Delete"
+                  title={isFolder ? 'Delete folder and all items inside' : 'Delete'}
                 >
                   <Trash2 className="w-3 h-3" />
                 </button>
@@ -268,35 +258,7 @@ const NotesSidebar = ({
         </div>
       )}
 
-      {/* Floating create menu when right-clicking or + on a folder */}
-      {createMenuOpen && createMenuTarget !== null && (
-        <div
-          ref={createMenuRef}
-          className="fixed z-50 bg-secondary border border-border/60 rounded-lg shadow-lg w-44 overflow-hidden"
-          style={{ top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}
-        >
-          <div className="px-3 py-1.5 text-[10px] text-muted-foreground font-semibold border-b border-border/40">
-            Create in selected folder
-          </div>
-          <button
-            type="button"
-            onClick={() => handleCreate('folder')}
-            className="w-full px-3 py-2 text-xs text-left hover:bg-primary/10 flex items-center gap-2 text-foreground"
-          >
-            <FolderPlus className="w-3.5 h-3.5 text-amber-500" />
-            New Folder
-          </button>
-          <div className="border-t border-border/40" />
-          <button
-            type="button"
-            onClick={() => handleCreate('note')}
-            className="w-full px-3 py-2 text-xs text-left hover:bg-primary/10 flex items-center gap-2 text-foreground"
-          >
-            <FilePlus className="w-3.5 h-3.5 text-[#7C3AED]" />
-            New Note
-          </button>
-        </div>
-      )}
+
     </aside>
   );
 };

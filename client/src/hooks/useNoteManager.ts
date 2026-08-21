@@ -87,8 +87,46 @@ export function useNoteManager(userId: string | undefined) {
   }, [userId, notes, handleNoteChange]);
 
   const handleDeleteNote = useCallback(async (id: string) => {
-    deleteMutation.mutate(id);
-  }, [deleteMutation]);
+    // If deleting a subject folder (virtual id like 'subject-X'), delete all notes with that subject
+    if (id.startsWith('subject-')) {
+      const subjectName = id.replace('subject-', '');
+      const notesToDelete = notes.filter(n => n.subject === subjectName && !n.parentId);
+      // Also find all nested children of those notes
+      const allIds = new Set<string>();
+      const collectChildren = (parentId: string) => {
+        notes.filter(n => n.parentId === parentId).forEach(child => {
+          allIds.add(child.id);
+          collectChildren(child.id);
+        });
+      };
+      notesToDelete.forEach(n => { allIds.add(n.id); collectChildren(n.id); });
+      // Delete each note
+      for (const nid of allIds) {
+        deleteMutation.mutate(nid);
+      }
+      if (selectedNoteId && allIds.has(selectedNoteId)) {
+        setSelectedNoteId(null);
+      }
+      toast.success(`Deleted folder "${subjectName}" and all items inside`);
+      return;
+    }
+    // Regular note/folder delete - also delete all children
+    const allIds = new Set<string>([id]);
+    const collectChildren = (parentId: string) => {
+      notes.filter(n => n.parentId === parentId).forEach(child => {
+        allIds.add(child.id);
+        collectChildren(child.id);
+      });
+    };
+    collectChildren(id);
+    for (const nid of allIds) {
+      deleteMutation.mutate(nid);
+    }
+    if (selectedNoteId && allIds.has(selectedNoteId)) {
+      setSelectedNoteId(null);
+    }
+    toast.success('Deleted');
+  }, [deleteMutation, notes, selectedNoteId]);
 
   const subjectTree: NoteSubjectNode[] = useMemo(() => {
     const byId = new Map<string, NoteSubjectNode>();
