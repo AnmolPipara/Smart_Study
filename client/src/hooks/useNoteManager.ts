@@ -54,15 +54,18 @@ export function useNoteManager(userId: string | undefined) {
 
   const handleCreateItem = useCallback((parentId: string | null, type: 'folder' | 'note') => {
     if (!userId) return;
-    let baseSubject = 'General';
+    let baseSubject = '';
     let actualParentId: string | null = parentId;
     if (parentId?.startsWith('subject-')) {
+      // Creating inside a virtual subject folder - no real parent, just set subject
       baseSubject = parentId.replace('subject-', '');
       actualParentId = null;
     } else if (parentId) {
+      // Creating inside a real note/folder - inherit its subject
       const parentNote = notes.find(n => n.id === parentId);
-      baseSubject = parentNote?.subject ?? 'General';
+      baseSubject = parentNote?.subject ?? '';
     }
+    // If actualParentId is null and baseSubject is empty, this is a true root item
     const draft: StudyNote = {
       id: '',
       userId,
@@ -90,6 +93,7 @@ export function useNoteManager(userId: string | undefined) {
   const subjectTree: NoteSubjectNode[] = useMemo(() => {
     const byId = new Map<string, NoteSubjectNode>();
     const subjectMap = new Map<string, NoteSubjectNode>();
+    const rootItems: NoteSubjectNode[] = [];
 
     // Create all nodes
     notes.forEach(note => {
@@ -103,13 +107,15 @@ export function useNoteManager(userId: string | undefined) {
       });
     });
 
-    // Build tree: notes with parentId go under parent, others go under subject folder
+    // Build tree
     notes.forEach(note => {
       const node = byId.get(note.id)!;
       if (note.parentId && byId.has(note.parentId)) {
+        // Has a parent note - nest under it
         byId.get(note.parentId)!.children!.push(node);
-      } else {
-        const subjectName = note.subject || 'General';
+      } else if (note.subject && note.subject.trim() !== '') {
+        // Root item with a subject - group under subject folder
+        const subjectName = note.subject;
         if (!subjectMap.has(subjectName)) {
           subjectMap.set(subjectName, {
             id: `subject-${subjectName}`,
@@ -120,10 +126,14 @@ export function useNoteManager(userId: string | undefined) {
           });
         }
         subjectMap.get(subjectName)!.children!.push(node);
+      } else {
+        // Root item with no subject - true root level
+        rootItems.push(node);
       }
     });
 
-    return Array.from(subjectMap.values()).sort((a, b) => a.name.localeCompare(b.name));
+    // Combine: root items first, then subject folders
+    return [...rootItems, ...Array.from(subjectMap.values()).sort((a, b) => a.name.localeCompare(b.name))];
   }, [notes]);
 
   const selectedNote = useMemo(
