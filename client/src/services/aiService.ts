@@ -170,7 +170,15 @@ Distribute topics evenly. Include revision, mock tests, and final review.
 `;
 
   const content = await callOpenRouter(prompt);
-  return extractJson<AiStudyPlan>(content);
+  const parsed = extractJson<Record<string, unknown>>(content);
+  return {
+    exam: String(parsed.exam || 'Study Plan'),
+    days: Array.isArray(parsed.days) ? (parsed.days as AiPlanDay[]).map(d => ({
+      day: String(d.day || ''),
+      title: String(d.title || ''),
+      topics: Array.isArray(d.topics) ? d.topics.map(String) : [],
+    })) : [],
+  };
 }
 
 // ---------- QUESTIONS ----------
@@ -201,7 +209,12 @@ Topic: ${topic}
 `;
 
   const content = await callOpenRouter(prompt);
-  return extractJson<AiQuestions>(content);
+  const parsed = extractJson<Record<string, unknown>>(content);
+  return {
+    topic: String(parsed.topic || topic),
+    difficulty: String(parsed.difficulty || difficulty),
+    questions: Array.isArray(parsed.questions) ? parsed.questions.map(String) : [],
+  };
 }
 
 // ---------- NOTES SUMMARY ----------
@@ -230,5 +243,15 @@ ${noteText}
 `;
 
   const content = await callOpenRouter(prompt);
-  return extractJson<AiNoteSummary>(content);
+  const parsed = extractJson<Record<string, unknown>>(content);
+  return {
+    summary: String(parsed.summary || 'No summary available.'),
+    key_points: Array.isArray(parsed.key_points) ? parsed.key_points.map(String) : [],
+    flashcards: Array.isArray(parsed.flashcards)
+      ? (parsed.flashcards as Record<string, string>[]).map(fc => ({
+          question: String(fc.question || ''),
+          answer: String(fc.answer || ''),
+        }))
+      : [],
+  };
 }
