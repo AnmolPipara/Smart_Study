@@ -1,16 +1,19 @@
-import { LayoutList, BookOpen, BarChart2 } from 'lucide-react';
+import { LayoutList, BookOpen, BarChart2, Target } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { DashboardSection } from '@/hooks/useDashboardNav';
 
 interface MobileBottomNavProps {
   section: DashboardSection;
-  onSelect: (section: DashboardSection) => void;
 }
 
-const MobileBottomNav = ({ section, onSelect }: MobileBottomNavProps) => {
+const MobileBottomNav = ({ section }: MobileBottomNavProps) => {
+  const navigate = useNavigate();
+
   const items: { id: DashboardSection; label: string; icon: typeof LayoutList }[] = [
     { id: 'tasks', label: 'Tasks', icon: LayoutList },
     { id: 'notes', label: 'Notes', icon: BookOpen },
     { id: 'analytics', label: 'Analytics', icon: BarChart2 },
+    { id: 'mastery', label: 'Mastery', icon: Target },
   ];
 
   return (
@@ -21,7 +24,7 @@ const MobileBottomNav = ({ section, onSelect }: MobileBottomNavProps) => {
           return (
             <button
               key={item.id}
-              onClick={() => onSelect(item.id)}
+              onClick={() => navigate(`/dashboard/${item.id}`)}
               className={`flex flex-col items-center gap-0.5 px-4 py-1.5 rounded-xl transition-all ${
                 isActive
                   ? 'text-primary bg-primary/10'

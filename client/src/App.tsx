@@ -36,7 +36,13 @@ const App = () => (
                 <Route path="/" element={<Landing />} />
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
-                <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+                <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>}>
+                  <Route index element={<Navigate to="tasks" replace />} />
+                  <Route path="tasks" element={null} />
+                  <Route path="notes" element={null} />
+                  <Route path="analytics" element={null} />
+                  <Route path="mastery" element={null} />
+                </Route>
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </ErrorBoundary>

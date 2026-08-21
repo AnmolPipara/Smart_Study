@@ -378,6 +378,7 @@ const Dashboard = () => {
         />
       )}
       <AiPlannerDialog open={showAiPlanner} onClose={() => setShowAiPlanner(false)} />
+      <MobileBottomNav section={section} />
     </div>
   );
 };
