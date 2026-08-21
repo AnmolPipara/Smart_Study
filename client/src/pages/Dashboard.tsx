@@ -39,7 +39,7 @@ const Dashboard = () => {
 
   const {
     selectedNoteId, setSelectedNoteId, selectedNote, subjectTree,
-    loadNotes, handleNoteChange, handleCreateNote, handleDeleteNote,
+    loadNotes, handleNoteChange, handleCreateItem, handleRenameNote, handleDeleteNote,
   } = useNoteManager(user?.id);
 
   const {
@@ -359,7 +359,8 @@ const Dashboard = () => {
               subjects={subjectTree}
               selectedId={selectedNoteId}
               onSelect={setSelectedNoteId}
-              onCreate={handleCreateNote}
+              onCreate={handleCreateItem}
+              onRename={handleRenameNote}
               onDelete={handleDeleteNote}
             />
             <NotesEditor note={selectedNote} onChange={handleNoteChange} />

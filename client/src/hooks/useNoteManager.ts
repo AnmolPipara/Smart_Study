@@ -52,22 +52,22 @@ export function useNoteManager(userId: string | undefined) {
     upsertMutation.mutate(note);
   }, [userId, upsertMutation]);
 
-  const handleCreateNote = useCallback((parentId: string | null) => {
+  const handleCreateItem = useCallback((parentId: string | null, type: 'folder' | 'note') => {
     if (!userId) return;
-    // If parentId looks like a subject folder (starts with 'subject-'), extract the subject name
     let baseSubject = 'General';
     let actualParentId: string | null = parentId;
     if (parentId?.startsWith('subject-')) {
       baseSubject = parentId.replace('subject-', '');
       actualParentId = null;
     } else if (parentId) {
-      baseSubject = notes.find(n => n.id === parentId)?.subject ?? 'General';
+      const parentNote = notes.find(n => n.id === parentId);
+      baseSubject = parentNote?.subject ?? 'General';
     }
     const draft: StudyNote = {
       id: '',
       userId,
       subject: baseSubject,
-      title: 'New Note',
+      title: type === 'folder' ? 'New Folder' : 'New Note',
       content: '',
       parentId: actualParentId,
       createdAt: new Date().toISOString(),
@@ -76,29 +76,39 @@ export function useNoteManager(userId: string | undefined) {
     handleNoteChange(draft);
   }, [userId, notes, handleNoteChange]);
 
+  const handleRenameNote = useCallback(async (id: string, newName: string) => {
+    if (!userId) return;
+    const note = notes.find(n => n.id === id);
+    if (!note) return;
+    handleNoteChange({ ...note, title: newName });
+  }, [userId, notes, handleNoteChange]);
+
   const handleDeleteNote = useCallback(async (id: string) => {
     deleteMutation.mutate(id);
   }, [deleteMutation]);
 
   const subjectTree: NoteSubjectNode[] = useMemo(() => {
-    // Group notes by subject, then nest children
-    const subjectMap = new Map<string, NoteSubjectNode>();
     const byId = new Map<string, NoteSubjectNode>();
+    const subjectMap = new Map<string, NoteSubjectNode>();
 
-    // First pass: create all nodes
+    // Create all nodes
     notes.forEach(note => {
-      const node: NoteSubjectNode = { id: note.id, name: note.title || 'Untitled', children: [] };
-      byId.set(note.id, node);
+      const hasChildren = notes.some(n => n.parentId === note.id);
+      const isEmpty = !note.content || note.content.trim() === '';
+      byId.set(note.id, {
+        id: note.id,
+        name: note.title || 'Untitled',
+        children: [],
+        isFolder: hasChildren || (isEmpty && note.title !== 'New Note'),
+      });
     });
 
-    // Second pass: build tree - notes with parentId go under parent, others go under subject folder
+    // Build tree: notes with parentId go under parent, others go under subject folder
     notes.forEach(note => {
       const node = byId.get(note.id)!;
       if (note.parentId && byId.has(note.parentId)) {
-        // This is a child note - attach to parent
         byId.get(note.parentId)!.children!.push(node);
       } else {
-        // This is a root note - attach to subject folder
         const subjectName = note.subject || 'General';
         if (!subjectMap.has(subjectName)) {
           subjectMap.set(subjectName, {
@@ -106,13 +116,13 @@ export function useNoteManager(userId: string | undefined) {
             name: subjectName,
             children: [],
             isSubject: true,
+            isFolder: true,
           });
         }
         subjectMap.get(subjectName)!.children!.push(node);
       }
     });
 
-    // Sort subjects alphabetically
     return Array.from(subjectMap.values()).sort((a, b) => a.name.localeCompare(b.name));
   }, [notes]);
 
@@ -129,7 +139,8 @@ export function useNoteManager(userId: string | undefined) {
     subjectTree,
     loadNotes,
     handleNoteChange,
-    handleCreateNote,
+    handleCreateItem,
+    handleRenameNote,
     handleDeleteNote,
   };
 }
