@@ -166,13 +166,8 @@ const Landing = () => {
 
           {/* Center logo/icon */}
           <div className="flex justify-center pt-16 md:pt-20 relative z-30">
-            <div className="w-16 h-16 bg-white rounded-2xl shadow-lg border border-gray-100 flex items-center justify-center">
-              <div className="grid grid-cols-2 gap-1.5">
-                <div className="w-4 h-4 bg-gray-900 rounded-full" />
-                <div className="w-4 h-4 bg-gray-900 rounded-full" />
-                <div className="w-4 h-4 bg-gray-900 rounded-full" />
-                <div className="w-4 h-4 bg-gray-300 rounded-full" />
-              </div>
+            <div className="w-16 h-16 bg-white rounded-2xl shadow-lg border border-gray-100 flex items-center justify-center overflow-hidden">
+              <img src="/studora-logo.png" alt="Studora" className="w-12 h-12 object-contain" />
             </div>
           </div>
 
