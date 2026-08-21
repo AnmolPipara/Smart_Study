@@ -74,12 +74,12 @@ export async function upsertMastery(
     createdAt: data.created_at, updatedAt: data.updated_at };
 }
 export async function recordMasteryFromRating(
-  topicId: string, userId: string, rating: PerformanceRating, isCorrect: boolean
+  topicId: string, userId: string, rating: PerformanceRating, isCorrect: boolean, actualScore?: number
 ): Promise<TopicMastery> {
   const existing = (await supabase.from('topic_mastery').select('*')
     .eq('topic_id', topicId).eq('user_id', userId).maybeSingle()).data;
   const currentScore = existing?.score ?? 0;
-  const newScore = calculateMasteryUpdate(currentScore, rating);
+  const newScore = calculateMasteryUpdate(currentScore, rating, actualScore);
   return upsertMastery(topicId, userId, {
     score: newScore, totalReviews: (existing?.total_reviews ?? 0) + 1,
     correctAnswers: (existing?.correct_answers ?? 0) + (isCorrect ? 1 : 0),

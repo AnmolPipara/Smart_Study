@@ -118,7 +118,16 @@ export function calculateNextRevision(
   return { intervalDays: newInterval, easeFactor: newEase };
 }
 
-export function calculateMasteryUpdate(currentScore: number, rating: PerformanceRating): number {
+export function calculateMasteryUpdate(currentScore: number, rating: PerformanceRating, actualScore?: number): number {
+  // If we have an actual quiz score (0-100), use weighted blend
+  if (actualScore !== undefined && actualScore !== null) {
+    // Weight: 70% new performance, 30% existing mastery
+    // This means a 100% quiz moves mastery toward 100 quickly,
+    // while a 0% quiz drops it toward 0
+    const blended = Math.round(currentScore * 0.3 + actualScore * 0.7);
+    return Math.max(0, Math.min(100, blended));
+  }
+  // Fallback: use coarse rating deltas (for manual revision ratings)
   let delta: number;
   switch (rating) {
     case 'again': delta = -15; break;

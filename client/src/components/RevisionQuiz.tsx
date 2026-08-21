@@ -53,7 +53,7 @@ const RevisionQuiz = ({ topicId, topicName, subjectName, currentMastery, onClose
       const avg = scores.length > 0 ? Math.round(scores.reduce((a,b)=>a+b,0)/scores.length) : 0;
       const rating: PerformanceRating = avg >= 80 ? 'easy' : avg >= 60 ? 'good' : avg >= 40 ? 'hard' : 'again';
       if (user?.id) {
-        try { await recordMasteryFromRating(topicId, user.id, rating, avg >= 50); toast.success('Quiz complete! Mastery updated.'); }
+        try { await recordMasteryFromRating(topicId, user.id, rating, avg >= 50, avg); toast.success('Quiz complete! Mastery updated.'); }
         catch { toast.error('Failed to update mastery'); }
       }
       setFinished(true); onComplete();
