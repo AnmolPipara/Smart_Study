@@ -146,11 +146,34 @@ export async function generateStudyPlan(params: {
   subjects: string;
   topics: string;
   difficulty: 'easy' | 'medium' | 'hard';
+  masteryData?: Array<{ subject: { name: string }; topics: Array<{ topic: { name: string }; mastery: { score: number } | null }> }>;
+  revisionsDue?: number;
 }): Promise<AiStudyPlan> {
-  const { examName, days, subjects, topics, difficulty } = params;
+  const { examName, days, subjects, topics, difficulty, masteryData, revisionsDue } = params;
+
+  let masteryContext = '';
+  if (masteryData && masteryData.length > 0) {
+    const lines = masteryData.flatMap(s =>
+      s.topics.map(t => `- ${s.subject.name} / ${t.topic.name}: ${t.mastery?.score ?? 0}% mastery`)
+    );
+    if (lines.length > 0) {
+      masteryContext = `
+
+Mastery scores (0-100):
+${lines.join('\n')}
+
+Prioritize LOW mastery topics (below 50%). Give more time to weak areas.
+Schedule revision sessions for topics with mastery below 60%.`;
+    }
+    if (revisionsDue && revisionsDue > 0) {
+      masteryContext += `
+
+There are ${revisionsDue} topics with revisions due today. Include revision slots for these.`;
+    }
+  }
 
   const prompt = `
-You are an expert study planner. Respond ONLY in JSON.
+You are an expert adaptive study planner. Respond ONLY in JSON.
 
 Format:
 {
@@ -165,8 +188,10 @@ Days: ${days}
 Subjects: ${subjects}
 Topics: ${topics}
 Difficulty: ${difficulty}
+${masteryContext}
 
-Distribute topics evenly. Include revision, mock tests, and final review.
+Create a realistic daily study plan. Prioritize weak topics. Include revision and mock tests.
+Each day should have 3-5 focused topics with estimated study time implied by topic count.
 `;
 
   const content = await callOpenRouter(prompt);
@@ -214,6 +239,50 @@ Topic: ${topic}
     topic: String(parsed.topic || topic),
     difficulty: String(parsed.difficulty || difficulty),
     questions: Array.isArray(parsed.questions) ? parsed.questions.map(String) : [],
+  };
+}
+
+// ---------- ANSWER EVALUATION ----------
+
+export interface AiAnswerEvaluation {
+  score: number; // 0-100
+  feedback: string;
+  strengths: string[];
+  improvements: string[];
+}
+
+export async function evaluateAnswer(params: {
+  question: string;
+  answer: string;
+  topic: string;
+}): Promise<AiAnswerEvaluation> {
+  const { question, answer, topic } = params;
+
+  const prompt = `
+Evaluate the student's answer for the question below.
+
+Topic: ${topic}
+Question: ${question}
+Student's Answer: ${answer}
+
+Respond ONLY in JSON:
+{
+  "score": number (0-100),
+  "feedback": string (brief overall assessment),
+  "strengths": string[] (what the student did well),
+  "improvements": string[] (what could be improved)
+}
+
+Be fair but rigorous. Score based on accuracy, completeness, and clarity.
+`;
+
+  const content = await callOpenRouter(prompt);
+  const parsed = extractJson<Record<string, unknown>>(content);
+  return {
+    score: typeof parsed.score === 'number' ? parsed.score : 50,
+    feedback: String(parsed.feedback || 'Answer evaluated.'),
+    strengths: Array.isArray(parsed.strengths) ? parsed.strengths.map(String) : [],
+    improvements: Array.isArray(parsed.improvements) ? parsed.improvements.map(String) : [],
   };
 }
 

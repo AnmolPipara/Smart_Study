@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { generateStudyPlan, AiStudyPlan } from '@/services/aiService';
+import { useMastery } from '@/hooks/useMastery';
 import { X } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -9,6 +10,7 @@ interface AiPlannerDialogProps {
 }
 
 const AiPlannerDialog = ({ open, onClose }: AiPlannerDialogProps) => {
+  const { subjectsWithMastery, revisionsDue } = useMastery();
   const [examName, setExamName] = useState('');
   const [planDays, setPlanDays] = useState('10');
   const [subjects, setSubjects] = useState('');
@@ -35,6 +37,8 @@ const AiPlannerDialog = ({ open, onClose }: AiPlannerDialogProps) => {
         subjects,
         topics,
         difficulty,
+        masteryData: subjectsWithMastery,
+        revisionsDue: revisionsDue.length,
       });
       setPlan(result);
     } catch (err: any) {
@@ -143,6 +147,12 @@ const AiPlannerDialog = ({ open, onClose }: AiPlannerDialogProps) => {
           <div className="flex flex-col min-h-0">
             <h3 className="text-xs font-semibold mb-2">AI Plan</h3>
             <div className="flex-1 rounded-lg bg-secondary/40 border border-border/40 p-3 overflow-auto text-xs space-y-2">
+              <div className="rounded-md bg-[#7C3AED]/10 border border-[#7C3AED]/30 px-2.5 py-2 mb-2">
+                <p className="text-[11px] font-semibold text-[#7C3AED] mb-0.5">\u2139\ufe0f Mastery-aware plan</p>
+                <p className="text-[10px] text-muted-foreground">
+                  AI will prioritize weak topics and schedule revisions for due topics.
+                </p>
+              </div>
               {!plan && !loading && (
                 <p className="text-muted-foreground">
                   Your generated day-by-day plan will appear here. You can then use it to create tasks.

@@ -40,3 +40,9 @@ __pycache__/
 
 
 supabase/.temp/
+
+# Freebuff
+.freebuff/
+
+# Nested git repos
+Smart_Study.git/

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { RevisionDueItem, PerformanceRating, getMasteryLevel } from '@/types/mastery';
-import { RefreshCw, Clock, AlertTriangle } from 'lucide-react';
+import { RefreshCw, Clock, AlertTriangle, BookOpen } from 'lucide-react';
+import RevisionQuiz from './RevisionQuiz';
 
 interface Props {
   revisionsDue: RevisionDueItem[];
@@ -17,8 +18,10 @@ const rc: Record<PerformanceRating, { label: string; color: string; bg: string }
 
 const RevisionPanel = ({ revisionsDue, onProcessRevision, isProcessing }: Props) => {
   const [active, setActive] = useState<string | null>(null);
+  const [quizTopic, setQuizTopic] = useState<{topicId:string;topicName:string;subjectName:string;mastery:number} | null>(null);
 
   return (
+    <>
     <div className="glass rounded-xl p-4">
       <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
         <RefreshCw className="w-4 h-4 text-[#C084FC]" />
@@ -61,10 +64,16 @@ const RevisionPanel = ({ revisionsDue, onProcessRevision, isProcessing }: Props)
                     Reviews: {revision.revisionCount}
                   </div>
                   {active !== topic.id ? (
-                    <button onClick={() => setActive(topic.id)}
-                      className="text-[10px] font-semibold px-2.5 py-1 rounded-md bg-gradient-to-r from-[#7C3AED] to-[#C084FC] text-white hover:opacity-90 transition-opacity">
-                      Start Revision
-                    </button>
+                    <div className="flex gap-1.5">
+                      <button onClick={() => setActive(topic.id)}
+                        className="text-[10px] font-semibold px-2.5 py-1 rounded-md bg-gradient-to-r from-[#7C3AED] to-[#C084FC] text-white hover:opacity-90 transition-opacity">
+                        Start Revision
+                      </button>
+                      <button onClick={() => setQuizTopic({topicId:topic.id,topicName:topic.name,subjectName:subject?.name??'General',mastery:score})}
+                        className="text-[10px] font-semibold px-2 py-1 rounded-md bg-secondary text-[#C084FC] border border-[#7C3AED]/40 hover:bg-secondary/80 transition-colors flex items-center gap-1">
+                        <BookOpen className="w-3 h-3" /> Quiz
+                      </button>
+                    </div>
                   ) : null}
                 </div>
                 {active === topic.id && (
@@ -86,6 +95,18 @@ const RevisionPanel = ({ revisionsDue, onProcessRevision, isProcessing }: Props)
         </div>
       )}
     </div>
+      {quizTopic && (
+        <RevisionQuiz
+          topicId={quizTopic.topicId}
+          topicName={quizTopic.topicName}
+          subjectName={quizTopic.subjectName}
+          currentMastery={quizTopic.mastery}
+          onClose={() => setQuizTopic(null)}
+          onComplete={() => setQuizTopic(null)}
+        />
+      )}
+    </>
   );
 };
+
 export default RevisionPanel;
