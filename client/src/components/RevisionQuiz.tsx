@@ -73,10 +73,10 @@ const RevisionQuiz = ({ topicId, topicName, subjectName, currentMastery, onClose
         <div className="flex-1 overflow-auto p-4">
           {!questions && !loadingQuestions && (
             <div className="text-center py-8">
-              <Award className="w-10 h-10 text-[#7C3AED] mx-auto mb-3" />
+              <Award className="w-10 h-10 text-blue-500 mx-auto mb-3" />
               <p className="text-sm font-medium mb-1">Ready to test your knowledge?</p>
               <p className="text-xs text-muted-foreground mb-4">Generate 5 practice questions for this topic.</p>
-              <button onClick={handleGenerate} className="px-4 py-2 rounded-lg bg-gradient-to-r from-[#7C3AED] to-[#C084FC] text-white text-xs font-semibold hover:opacity-90 transition-opacity">Generate Questions</button>
+              <button onClick={handleGenerate} className="px-4 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-blue-400 text-white text-xs font-semibold hover:opacity-90 transition-opacity">Generate Questions</button>
             </div>
           )}
           {loadingQuestions && <div className="text-center py-8"><p className="text-xs text-muted-foreground animate-pulse">Generating questions...</p></div>}
@@ -84,7 +84,7 @@ const RevisionQuiz = ({ topicId, topicName, subjectName, currentMastery, onClose
             <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <div className="flex-1 h-1.5 bg-secondary rounded-full overflow-hidden">
-                  <div className="h-full bg-[#7C3AED] rounded-full transition-all" style={{width:`${((currentQ + (evaluation ? 1 : 0)) / questions.questions.length) * 100}%`}} />
+                  <div className="h-full bg-blue-500 rounded-full transition-all" style={{width:`${((currentQ + (evaluation ? 1 : 0)) / questions.questions.length) * 100}%`}} />
                 </div>
                 <span className="text-[10px] text-muted-foreground">{currentQ + 1}/{questions.questions.length}</span>
               </div>
@@ -95,7 +95,7 @@ const RevisionQuiz = ({ topicId, topicName, subjectName, currentMastery, onClose
                   disabled={!!evaluation} />
                 {!evaluation && (
                   <button onClick={handleEvaluate} disabled={!answer.trim() || loadingEval}
-                    className="mt-2 px-3 py-1.5 rounded-lg bg-[#7C3AED] text-white text-xs font-semibold hover:opacity-90 disabled:opacity-50 transition-opacity flex items-center gap-1.5">
+                    className="mt-2 px-3 py-1.5 rounded-lg bg-blue-600 text-white text-xs font-semibold hover:opacity-90 disabled:opacity-50 transition-opacity flex items-center gap-1.5">
                     {loadingEval ? 'Evaluating...' : <><Send className="w-3 h-3" /> Submit Answer</>}
                   </button>
                 )}
@@ -121,7 +121,7 @@ const RevisionQuiz = ({ topicId, topicName, subjectName, currentMastery, onClose
               <p className="text-lg font-bold mb-1">Quiz Complete!</p>
               <p className="text-xs text-muted-foreground mb-3">Average score: {scores.length > 0 ? Math.round(scores.reduce((a,b)=>a+b,0)/scores.length) : 0}%</p>
               <p className="text-[10px] text-muted-foreground mb-4">Your mastery score has been updated based on your performance.</p>
-              <button onClick={onClose} className="px-4 py-2 rounded-lg bg-[#7C3AED] text-white text-xs font-semibold hover:opacity-90 transition-opacity">Done</button>
+              <button onClick={onClose} className="px-4 py-2 rounded-lg bg-blue-600 text-white text-xs font-semibold hover:opacity-90 transition-opacity">Done</button>
             </div>
           )}
         </div>

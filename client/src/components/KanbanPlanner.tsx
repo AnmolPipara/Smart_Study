@@ -78,7 +78,7 @@ const KanbanPlanner = ({ tasks, onToggle, onDelete, onEdit }: KanbanPlannerProps
                   <header className="mb-3 flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <div className="w-7 h-7 rounded-lg bg-secondary flex items-center justify-center">
-                        <column.icon className="w-4 h-4 text-[#7C3AED]" />
+                        <column.icon className="w-4 h-4 text-blue-500" />
                       </div>
                       <div>
                         <h3 className="text-sm font-semibold">{column.title}</h3>
@@ -109,7 +109,7 @@ const KanbanPlanner = ({ tasks, onToggle, onDelete, onEdit }: KanbanPlannerProps
                                 {...provided.draggableProps}
                                 {...provided.dragHandleProps}
                                 className={[
-                                  'group w-full text-left rounded-lg p-3 text-xs transition-all shadow-card border border-[#3D2D6A] bg-[#1E1535] hover:bg-[#261B45] cursor-grab active:cursor-grabbing',
+                                  'group w-full text-left rounded-lg p-3 text-xs transition-all shadow-card border border-border bg-card hover:bg-secondary/50 cursor-grab active:cursor-grabbing',
                                   snapshot.isDragging ? 'ring-2 ring-primary shadow-lg rotate-1 scale-105' : '',
                                 ].join(' ')}
                                 onClick={() => onEdit(task)}
@@ -141,7 +141,7 @@ const KanbanPlanner = ({ tasks, onToggle, onDelete, onEdit }: KanbanPlannerProps
                                       {task.completed ? (
                                         <CheckCircle2 className="w-4 h-4 text-[#22C55E]" />
                                       ) : (
-                                        <span className="w-4 h-4 inline-block rounded-full border border-[#7C3AED]/60" />
+                                        <span className="w-4 h-4 inline-block rounded-full border border-blue-500/60" />
                                       )}
                                     </button>
                                   </div>

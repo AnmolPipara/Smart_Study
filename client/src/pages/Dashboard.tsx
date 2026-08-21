@@ -89,7 +89,7 @@ const Dashboard = () => {
                   title="Tasks"
                   className={`w-full flex items-center justify-center p-2 rounded-xl transition-all ${
                     section === 'tasks'
-                      ? 'bg-gradient-to-r from-primary to-[#C084FC] text-primary-foreground'
+                      ? 'bg-primary text-primary-foreground'
                       : 'bg-secondary/60 text-muted-foreground hover:bg-secondary hover:text-foreground'
                   }`}
                 >
@@ -101,7 +101,7 @@ const Dashboard = () => {
                   title="Notes"
                   className={`w-full flex items-center justify-center p-2 rounded-xl transition-all ${
                     section === 'notes'
-                      ? 'bg-gradient-to-r from-primary to-[#C084FC] text-primary-foreground'
+                      ? 'bg-primary text-primary-foreground'
                       : 'bg-secondary/60 text-muted-foreground hover:bg-secondary hover:text-foreground'
                   }`}
                 >
@@ -113,7 +113,7 @@ const Dashboard = () => {
                   title="Analytics"
                   className={`w-full flex items-center justify-center p-2 rounded-xl transition-all ${
                     section === 'analytics'
-                      ? 'bg-gradient-to-r from-primary to-[#C084FC] text-primary-foreground'
+                      ? 'bg-primary text-primary-foreground'
                       : 'bg-secondary/60 text-muted-foreground hover:bg-secondary hover:text-foreground'
                   }`}
                 >
@@ -125,7 +125,7 @@ const Dashboard = () => {
                   title="Mastery"
                   className={`w-full flex items-center justify-center p-2 rounded-xl transition-all ${
                     section === 'mastery'
-                      ? 'bg-gradient-to-r from-primary to-[#C084FC] text-primary-foreground'
+                      ? 'bg-primary text-primary-foreground'
                       : 'bg-secondary/60 text-muted-foreground hover:bg-secondary hover:text-foreground'
                   }`}
                 >
@@ -147,7 +147,7 @@ const Dashboard = () => {
                   }}
                   className={`relative w-full text-left text-sm px-3 py-2.5 rounded-xl transition-all duration-300 flex items-center justify-between ${
                     section === 'tasks'
-                      ? 'bg-gradient-to-r from-primary to-[#C084FC] text-primary-foreground shadow-card'
+                      ? 'bg-blue-600 text-white shadow-card'
                       : 'bg-secondary/60 text-muted-foreground hover:text-foreground hover:bg-secondary'
                   }`}
                 >
@@ -187,7 +187,7 @@ const Dashboard = () => {
                   onClick={() => setSection('notes')}
                   className={`relative w-full text-left text-sm px-3 py-2.5 rounded-xl transition-all duration-300 ${
                     section === 'notes'
-                      ? 'bg-gradient-to-r from-primary to-[#C084FC] text-primary-foreground shadow-card'
+                      ? 'bg-blue-600 text-white shadow-card'
                       : 'bg-secondary/60 text-muted-foreground hover:text-foreground hover:bg-secondary'
                   }`}
                 >
@@ -198,7 +198,7 @@ const Dashboard = () => {
                   onClick={() => setSection('analytics')}
                   className={`relative w-full text-left text-sm px-3 py-2.5 rounded-xl transition-all duration-300 ${
                     section === 'analytics'
-                      ? 'bg-gradient-to-r from-primary to-[#C084FC] text-primary-foreground shadow-card'
+                      ? 'bg-blue-600 text-white shadow-card'
                       : 'bg-secondary/60 text-muted-foreground hover:text-foreground hover:bg-secondary'
                   }`}
                 >
@@ -209,7 +209,7 @@ const Dashboard = () => {
                   onClick={() => setSection('mastery')}
                   className={`relative w-full text-left text-sm px-3 py-2.5 rounded-xl transition-all duration-300 ${
                     section === 'mastery'
-                      ? 'bg-gradient-to-r from-primary to-[#C084FC] text-primary-foreground shadow-card'
+                      ? 'bg-blue-600 text-white shadow-card'
                       : 'bg-secondary/60 text-muted-foreground hover:text-foreground hover:bg-secondary'
                   }`}
                 >
@@ -243,7 +243,7 @@ const Dashboard = () => {
                 <>
                   <button
                     onClick={openNewTaskForm}
-                    className="flex items-center gap-2 bg-gradient-to-r from-primary to-[#C084FC] text-primary-foreground px-4 py-2.5 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity glow-primary"
+                    className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2.5 rounded-lg text-sm font-semibold hover:bg-primary/90 transition-colors shadow-sm"
                   >
                     <Plus className="w-4 h-4" />
                     Add Task

@@ -36,14 +36,15 @@ const Header = () => {
     : email.slice(0, 2).toUpperCase();
 
   return (
-    <header className="glass border-b border-border/50 px-6 py-4 sticky top-0 z-50">
+    <header className="glass border-b border-border/40 px-6 py-3.5 sticky top-0 z-50">
       <div className="max-w-full mx-auto flex items-center justify-between">
         {/* Logo */}
-        <div className="flex items-center gap-3">
-          <AppLogo size={40} />
+        <div className="flex items-center gap-3">              <div className="w-9 h-9 rounded-xl bg-white dark:bg-secondary flex items-center justify-center shadow-sm border border-border/50">
+              <AppLogo size={28} />
+            </div>
           <div>
-            <h1 className="text-xl font-bold tracking-tight">Smart Study Planner</h1>
-            <p className="text-xs text-muted-foreground">Plan smarter, study better</p>
+            <h1 className="text-lg font-bold tracking-tight">Smart Study Planner</h1>
+            <p className="text-[11px] text-muted-foreground">Plan smarter, study better</p>
           </div>
         </div>
 
@@ -71,7 +72,7 @@ const Header = () => {
                   className="w-7 h-7 rounded-full object-cover ring-2 ring-primary/40"
                 />
               ) : (
-                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-primary to-[#C084FC] flex items-center justify-center text-[11px] font-bold text-white ring-2 ring-primary/30">
+                <div className="w-7 h-7 rounded-full bg-primary flex items-center justify-center text-[11px] font-bold text-white ring-2 ring-primary/30">
                   {initials}
                 </div>
               )}
@@ -90,7 +91,7 @@ const Header = () => {
 
             {/* Dropdown */}
             {open && (
-              <div className="absolute right-0 mt-2 w-64 bg-[#1a1a2e] border border-border/60 rounded-xl shadow-2xl overflow-hidden z-50 animate-in fade-in-0 slide-in-from-top-2 duration-150">
+              <div className="absolute right-0 mt-2 w-64 bg-popover border border-border/60 rounded-xl shadow-xl overflow-hidden z-50 animate-in fade-in-0 slide-in-from-top-2 duration-150">
                 {/* User info */}
                 <div className="px-4 py-3 border-b border-border/40 flex items-center gap-3">
                   {avatarUrl ? (
@@ -100,7 +101,7 @@ const Header = () => {
                       className="w-10 h-10 rounded-full object-cover ring-2 ring-primary/40"
                     />
                   ) : (
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-[#C084FC] flex items-center justify-center text-sm font-bold text-white ring-2 ring-primary/30">
+                    <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-sm font-bold text-white ring-2 ring-primary/30">
                       {initials}
                     </div>
                   )}

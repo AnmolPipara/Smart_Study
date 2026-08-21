@@ -60,7 +60,7 @@ const AnalyticsDashboard = ({ tasks, selectedDate }: AnalyticsDashboardProps) =>
 
   const mostStudiedSubject = subjectData.sort((a, b) => b.minutes - a.minutes)[0]?.name ?? '—';
 
-  const COLORS = ['#7C3AED', '#C084FC', '#4C1D95', '#D97706', '#22C55E', '#ec4899'];
+  const COLORS = ['#3b82f6', '#60a5fa', '#1d4ed8', '#D97706', '#22C55E', '#ec4899'];
 
   return (
     <div className="space-y-4">
@@ -100,13 +100,13 @@ const AnalyticsDashboard = ({ tasks, selectedDate }: AnalyticsDashboardProps) =>
               <YAxis stroke="#9ca3af" fontSize={10} />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: '#020617',
+                  backgroundColor: 'hsl(var(--card))',
                   borderRadius: 8,
-                  border: '1px solid #1f2937',
+                  border: '1px solid hsl(var(--border))',
                   fontSize: 11,
                 }}
               />
-              <Bar dataKey="minutes" fill="#7C3AED" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="minutes" fill="#3b82f6" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>

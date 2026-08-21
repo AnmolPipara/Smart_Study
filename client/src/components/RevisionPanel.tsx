@@ -24,10 +24,10 @@ const RevisionPanel = ({ revisionsDue, onProcessRevision, isProcessing }: Props)
     <>
     <div className="glass rounded-xl p-4">
       <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
-        <RefreshCw className="w-4 h-4 text-[#C084FC]" />
+        <RefreshCw className="w-4 h-4 text-primary" />
         Revision Due
         {revisionsDue.length > 0 && (
-          <span className="ml-auto text-[10px] px-2 py-0.5 rounded-full bg-[#7C3AED]/15 text-[#7C3AED] font-semibold">
+          <span className="ml-auto text-[10px] px-2 py-0.5 rounded-full bg-primary/15 text-primary font-semibold">
             {revisionsDue.length} topic{revisionsDue.length > 1 ? 's' : ''}
           </span>
         )}
@@ -66,11 +66,11 @@ const RevisionPanel = ({ revisionsDue, onProcessRevision, isProcessing }: Props)
                   {active !== topic.id ? (
                     <div className="flex gap-1.5">
                       <button onClick={() => setActive(topic.id)}
-                        className="text-[10px] font-semibold px-2.5 py-1 rounded-md bg-gradient-to-r from-[#7C3AED] to-[#C084FC] text-white hover:opacity-90 transition-opacity">
+                        className="text-[10px] font-semibold px-2.5 py-1 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors">
                         Start Revision
                       </button>
                       <button onClick={() => setQuizTopic({topicId:topic.id,topicName:topic.name,subjectName:subject?.name??'General',mastery:score})}
-                        className="text-[10px] font-semibold px-2 py-1 rounded-md bg-secondary text-[#C084FC] border border-[#7C3AED]/40 hover:bg-secondary/80 transition-colors flex items-center gap-1">
+                        className="text-[10px] font-semibold px-2 py-1 rounded-md bg-secondary text-primary border border-primary/30 hover:bg-secondary/80 transition-colors flex items-center gap-1">
                         <BookOpen className="w-3 h-3" /> Quiz
                       </button>
                     </div>

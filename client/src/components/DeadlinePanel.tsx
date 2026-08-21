@@ -15,7 +15,7 @@ const DeadlinePanel = ({ tasks }: DeadlinePanelProps) => {
   return (
     <div className="glass rounded-xl p-4">
       <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
-        <AlertTriangle className="w-4 h-4 text-[#C084FC]" />
+        <AlertTriangle className="w-4 h-4 text-primary" />
         Upcoming Deadlines
       </h3>
       {upcoming.length === 0 ? (
@@ -37,7 +37,7 @@ const DeadlinePanel = ({ tasks }: DeadlinePanelProps) => {
                 <div className="flex items-center justify-between mb-1">
                   <p className="text-xs font-medium truncate">{task.title}</p>
                   <span className={`text-[10px] font-semibold ${
-                    isOverdue ? 'text-destructive' : daysLeft <= 1 ? 'text-[#C084FC]' : 'text-muted-foreground'
+                    isOverdue ? 'text-destructive' : daysLeft <= 1 ? 'text-primary' : 'text-muted-foreground'
                   }`}>
                     {isOverdue ? 'Overdue' : daysLeft === 0 ? 'Today' : `${daysLeft}d left`}
                   </span>

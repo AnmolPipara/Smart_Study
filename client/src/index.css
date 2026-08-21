@@ -7,91 +7,91 @@
 @layer base {
   :root {
     /* Base Colors */
-    --background: 250 44% 7%; /* #0D0A1A */
+    --background: 210 20% 7%; /* #0f172a - refined dark */
     --foreground: 210 20% 96%;
 
     /* Surfacing */
-    --card: 251 39% 14%; /* #1A1530 */
+    --card: 215 25% 12%; /* #1e293b */
     --card-foreground: 210 20% 96%;
-    --popover: 251 39% 14%;
+    --popover: 215 25% 12%;
     --popover-foreground: 210 20% 96%;
 
-    /* Accents */
-    --primary: 262 83% 58%; /* #7C3AED */
-    --primary-foreground: 210 20% 96%;
-    --secondary: 253 37% 23%; /* #2D2550 */
+    /* Accents - Blue primary */
+    --primary: 217 91% 60%; /* #3b82f6 blue-500 */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 215 25% 17%; /* #1e293b slightly lighter */
     --secondary-foreground: 210 20% 96%;
-    
-    --muted: 251 39% 14%;
-    --muted-foreground: 215 16% 65%; /* #94A3B8 */
 
-    --accent: 262 83% 58%; /* Replaced with primary purple */
-    --accent-foreground: 210 20% 96%;
+    --muted: 215 25% 12%;
+    --muted-foreground: 215 16% 55%;
 
-    --destructive: 0 84% 60%; /* #EF4444 (Keep red for actual errors) */
-    --destructive-foreground: 210 20% 96%;
+    --accent: 217 91% 60%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
 
     /* Borders */
-    --border: 253 37% 23%; /* #2D2550 */
-    --input: 253 37% 23%;
-    --ring: 262 83% 58%;
+    --border: 215 25% 20%;
+    --input: 215 25% 20%;
+    --ring: 217 91% 60%;
 
     --radius: 0.75rem;
 
     /* Semantic Priorities */
-    --priority-high: 0 84% 60%; /* Keep red */
-    --priority-medium: 38 92% 50%; /* #F59E0B Keep Warning amber */
-    --priority-low: 142 71% 45%; /* #22C55E Keep Success green */
+    --priority-high: 0 84% 60%;
+    --priority-medium: 38 92% 50%;
+    --priority-low: 142 71% 45%;
 
-    /* Sidebar inherits background */
-    --sidebar-background: 250 44% 7%;
+    /* Sidebar */
+    --sidebar-background: 215 28% 10%;
     --sidebar-foreground: 210 20% 96%;
-    --sidebar-primary: 262 83% 58%;
-    --sidebar-primary-foreground: 210 20% 96%;
-    --sidebar-accent: 251 39% 14%;
+    --sidebar-primary: 217 91% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 215 25% 14%;
     --sidebar-accent-foreground: 210 20% 96%;
-    --sidebar-border: 253 37% 23%;
-    --sidebar-ring: 262 83% 58%;
+    --sidebar-border: 215 25% 18%;
+    --sidebar-ring: 217 91% 60%;
 
-    /* Premium Shadows */
-    --shadow-glow: 0 0 24px rgba(124, 58, 237, 0.35); /* #7C3AED */
-    --shadow-card: 0 4px 24px rgba(124, 58, 237, 0.08);
+    /* Shadows */
+    --shadow-glow: 0 0 20px rgba(59, 130, 246, 0.25);
+    --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.3);
   }
 
   .light {
-    --background: 0 0% 98%;
-    --foreground: 240 10% 10%;
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 10%;
+    --background: 220 14% 96%; /* #f1f5f9 - clean light gray */
+    --foreground: 222 47% 11%; /* #0f172a */
+    --card: 0 0% 100%; /* pure white */
+    --card-foreground: 222 47% 11%;
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 10%;
-    --primary: 262 83% 58%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 217 91% 60%; /* #3b82f6 blue-500 */
     --primary-foreground: 0 0% 100%;
-    --secondary: 250 20% 93%;
-    --secondary-foreground: 240 10% 10%;
-    --muted: 250 20% 93%;
+    --secondary: 220 14% 93%; /* #e2e8f0 */
+    --secondary-foreground: 222 47% 11%;
+    --muted: 220 14% 93%;
     --muted-foreground: 215 16% 45%;
-    --accent: 262 83% 58%;
+    --accent: 217 91% 60%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 250 15% 85%;
-    --input: 250 15% 85%;
-    --ring: 262 83% 58%;
+    --border: 220 13% 89%;
+    --input: 220 13% 89%;
+    --ring: 217 91% 60%;
     --radius: 0.75rem;
     --priority-high: 0 84% 60%;
     --priority-medium: 38 92% 50%;
     --priority-low: 142 71% 45%;
-    --sidebar-background: 0 0% 97%;
-    --sidebar-foreground: 240 10% 10%;
-    --sidebar-primary: 262 83% 58%;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 222 47% 11%;
+    --sidebar-primary: 217 91% 60%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 250 20% 93%;
-    --sidebar-accent-foreground: 240 10% 10%;
-    --sidebar-border: 250 15% 85%;
-    --sidebar-ring: 262 83% 58%;
-    --shadow-glow: 0 0 24px rgba(124, 58, 237, 0.15);
-    --shadow-card: 0 4px 24px rgba(124, 58, 237, 0.05);
+    --sidebar-accent: 220 14% 95%;
+    --sidebar-accent-foreground: 222 47% 11%;
+    --sidebar-border: 220 13% 89%;
+    --sidebar-ring: 217 91% 60%;
+    --shadow-glow: 0 0 20px rgba(59, 130, 246, 0.12);
+    --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.06);
   }
 }
 
@@ -104,17 +104,23 @@
     @apply text-foreground font-sans antialiased;
     font-family: 'Inter', sans-serif;
     background-color: hsl(var(--background));
-    background-image: 
-      radial-gradient(circle at 80% -20%, rgba(124, 58, 237, 0.15), transparent 50%),
-      radial-gradient(circle at -10% 110%, rgba(217, 119, 6, 0.08), transparent 60%);
+  }
+
+  /* Dark mode subtle glow */
+  body:not(.light *) {
+    background-image:
+      radial-gradient(circle at 80% -20%, rgba(59, 130, 246, 0.08), transparent 50%),
+      radial-gradient(circle at -10% 110%, rgba(139, 92, 246, 0.05), transparent 60%);
     background-attachment: fixed;
   }
 
-  .light body,
-  .light {
-    background-image: 
-      radial-gradient(circle at 80% -20%, rgba(124, 58, 237, 0.06), transparent 50%),
-      radial-gradient(circle at -10% 110%, rgba(217, 119, 6, 0.04), transparent 60%);
+  /* Light mode dot grid */
+  .light,
+  .light body {
+    background-image:
+      radial-gradient(circle at 1px 1px, hsl(220 13% 85% / 0.5) 1px, transparent 0);
+    background-size: 28px 28px;
+    background-attachment: fixed;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -130,7 +136,7 @@
     box-shadow: var(--shadow-card);
   }
   .glass {
-    @apply bg-card/75 backdrop-blur-xl border border-border/60;
+    @apply bg-card/80 backdrop-blur-xl border border-border/50;
   }
   .app-logo-orb {
     background-image:

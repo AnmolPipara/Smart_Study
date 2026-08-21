@@ -119,7 +119,7 @@ const Landing = () => {
       </nav>
 
       {/* Hero Content */}
-      <main className="flex-1 flex flex-col items-center justify-center px-6 relative z-10 w-full max-w-7xl mx-auto pt-4 pb-16">
+      <main className="flex-1 flex flex-col items-center justify-center px-6 relative z-10 w-full max-w-7xl mx-auto pt-8 pb-24">
         {/* Floating UI elements */}
         <div className="relative w-full max-w-5xl mx-auto mb-8">
           {/* Sticky note - top left */}
@@ -233,7 +233,7 @@ const Landing = () => {
           </div>
 
           {/* Hero heading */}
-          <div className="text-center relative z-30 pt-20 md:pt-28">
+          <div className="text-center relative z-30 pt-24 md:pt-32 pb-8">
             <h1
               className="text-5xl md:text-7xl lg:text-[5.5rem] font-bold tracking-tight leading-[1.05] mb-6"
               style={{ fontFamily: "'Space Grotesk', sans-serif" }}

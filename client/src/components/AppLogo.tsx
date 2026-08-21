@@ -17,9 +17,9 @@ const AppLogo = ({ size = 40 }: AppLogoProps) => {
       >
         <defs>
           <linearGradient id="logoStroke" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#C084FC" />
-            <stop offset="50%" stopColor="#7C3AED" />
-            <stop offset="100%" stopColor="#4C1D95" />
+            <stop offset="0%" stopColor="#60A5FA" />
+            <stop offset="50%" stopColor="#3B82F6" />
+            <stop offset="100%" stopColor="#1D4ED8" />
           </linearGradient>
         </defs>
         <path

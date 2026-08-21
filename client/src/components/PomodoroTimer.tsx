@@ -159,7 +159,7 @@ const PomodoroTimer = () => {
           className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 ${
             isRunning
               ? 'bg-secondary text-foreground hover:bg-secondary/80'
-              : 'bg-gradient-to-r from-primary to-[#C084FC] text-primary-foreground hover:opacity-90 glow-primary'
+              : 'bg-primary text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm'
           }`}
         >
           {isRunning ? (

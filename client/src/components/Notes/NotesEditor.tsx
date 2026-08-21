@@ -180,14 +180,14 @@ const NotesEditor = ({ note, onChange }: NotesEditorProps) => {
       <aside className="w-full md:w-96 flex flex-col bg-secondary/40">
         <div className="px-3 py-2 border-b border-border/40 flex items-center justify-between gap-2">
           <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-            <Sparkles className="w-4 h-4 text-[#7C3AED]" />
+            <Sparkles className="w-4 h-4 text-primary" />
             <span className="font-semibold">AI Assistant</span>
           </div>
           <button
             type="button"
             onClick={handleSummarize}
             disabled={loadingSummary}
-            className="px-2.5 py-1 rounded-md text-xs bg-gradient-to-r from-[#7C3AED] to-[#C084FC] text-primary-foreground hover:opacity-90 disabled:opacity-60"
+            className="px-2.5 py-1 rounded-md text-xs bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-60 transition-colors"
           >
             {loadingSummary ? 'Summarizing…' : 'Summarize'}
           </button>
@@ -219,7 +219,7 @@ const NotesEditor = ({ note, onChange }: NotesEditorProps) => {
             type="button"
             onClick={handleGenerateQuestions}
             disabled={loadingQuestions}
-            className="w-full text-xs bg-secondary text-[#C084FC] rounded-md py-1.5 border border-[#7C3AED]/60 hover:bg-secondary/80 disabled:opacity-60"
+            className="w-full text-xs bg-secondary text-primary rounded-md py-1.5 border border-primary/40 hover:bg-secondary/80 disabled:opacity-60 transition-colors"
           >
             {loadingQuestions ? 'Generating…' : 'Generate Questions'}
           </button>
@@ -232,13 +232,13 @@ const NotesEditor = ({ note, onChange }: NotesEditorProps) => {
               onClick={() => setActiveTab('summary')}
               className={`flex-1 px-3 py-2 text-xs font-medium flex items-center justify-center gap-1.5 transition-colors ${
                 activeTab === 'summary'
-                  ? 'text-[#C084FC] border-b-2 border-[#7C3AED]'
+                  ? 'text-primary border-b-2 border-primary'
                   : 'text-muted-foreground hover:text-foreground'
               }`}
             >
               <FileText className="w-3 h-3" />
               Summary
-              {summary && <span className="w-1.5 h-1.5 rounded-full bg-[#7C3AED] ml-0.5" />}
+              {summary && <span className="w-1.5 h-1.5 rounded-full bg-primary ml-0.5" />}
             </button>
             <button
               type="button"
@@ -275,7 +275,7 @@ const NotesEditor = ({ note, onChange }: NotesEditorProps) => {
                   <ul className="space-y-1">
                     {summary.key_points.map((kp) => (
                       <li key={kp} className="flex items-start gap-1.5 text-muted-foreground">
-                        <span className="text-[#7C3AED] mt-0.5">•</span>
+                        <span className="text-primary mt-0.5">•</span>
                         <span>{kp}</span>
                       </li>
                     ))}
@@ -288,7 +288,7 @@ const NotesEditor = ({ note, onChange }: NotesEditorProps) => {
                   <ul className="space-y-1.5">
                     {summary.flashcards.map((fc) => (
                       <li key={fc.question} className="bg-background/40 rounded-md px-2.5 py-2 border border-border/30">
-                        <p className="text-[#C084FC] font-medium mb-1">Q: {fc.question}</p>
+                        <p className="text-primary font-medium mb-1">Q: {fc.question}</p>
                         <p className="text-green-400">A: {fc.answer}</p>
                       </li>
                     ))}

@@ -17,7 +17,7 @@ const StudyProgress = ({ tasks }: StudyProgressProps) => {
       icon: Target,
       label: 'Total Tasks',
       value: total,
-      color: 'text-[#7C3AED]',
+      color: 'text-blue-600',
     },
     {
       icon: CheckCircle2,
@@ -35,7 +35,7 @@ const StudyProgress = ({ tasks }: StudyProgressProps) => {
       icon: TrendingUp,
       label: 'Progress',
       value: `${completionRate}%`,
-      color: 'text-[#C084FC]',
+      color: 'text-blue-400',
     },
   ];
 
@@ -46,7 +46,7 @@ const StudyProgress = ({ tasks }: StudyProgressProps) => {
       {/* Progress bar */}
       <div className="h-2 bg-secondary rounded-full mb-4 overflow-hidden">
         <div
-          className="h-full bg-[#7C3AED] rounded-full transition-all duration-500"
+          className="h-full bg-blue-600 rounded-full transition-all duration-500"
           style={{ width: `${completionRate}%` }}
         />
       </div>

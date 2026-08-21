@@ -47,20 +47,20 @@ const CalendarPlanner = ({ tasks, selectedDate, onSelectDate }: CalendarPlannerP
               onClick={() => onSelectDate(day)}
               className={[
                 'relative flex flex-col items-start justify-between rounded-xl p-2 min-h-[80px] text-left transition-all glass',
-                isSelected ? 'border-[#7C3AED]/60 shadow-[0_0_12px_rgba(124,58,237,0.4)]' : 'border-border hover:border-border/60',
+                isSelected ? 'border-blue-500/60 shadow-[0_0_12px_rgba(59,130,246,0.4)]' : 'border-border hover:border-border/60',
               ].join(' ')}
             >
               <div className="flex items-center justify-between w-full mb-1">
                 <span
                   className={[
                     'text-sm font-semibold',
-                    isCurrentToday ? 'text-[#C084FC]' : '',
+                    isCurrentToday ? 'text-blue-500' : '',
                   ].join(' ')}
                 >
                   {format(day, 'd')}
                 </span>
                 {isCurrentToday && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#7C3AED]" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
                 )}
               </div>
               <div className="space-y-1 w-full">
@@ -70,7 +70,7 @@ const CalendarPlanner = ({ tasks, selectedDate, onSelectDate }: CalendarPlannerP
                     className={[
                       'w-full h-1.5 rounded-full bg-gradient-to-r',
                       task.priority === 'high'
-                        ? 'from-[#7C3AED]/80 to-[#C084FC]/60'
+                        ? 'from-blue-500/80 to-blue-400/60'
                         : task.priority === 'medium'
                         ? 'from-amber-400/80 to-amber-300/60'
                         : 'from-emerald-400/80 to-emerald-300/60',

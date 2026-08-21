@@ -26,7 +26,7 @@ const MasteryPanel = ({ subjectsWithMastery, onAddSubject, onAddTopic, onRemoveS
 
   if (loading) return (
     <div className="glass rounded-xl p-4">
-      <h3 className="text-sm font-semibold mb-3 flex items-center gap-2"><Target className="w-4 h-4 text-[#7C3AED]" /> Topic Mastery</h3>
+      <h3 className="text-sm font-semibold mb-3 flex items-center gap-2"><Target className="w-4 h-4 text-primary" /> Topic Mastery</h3>
       <div className="space-y-2">{[1,2,3].map(i => <div key={i} className="h-8 bg-secondary/50 rounded-lg animate-pulse" />)}</div>
     </div>
   );
@@ -34,7 +34,7 @@ const MasteryPanel = ({ subjectsWithMastery, onAddSubject, onAddTopic, onRemoveS
   return (
     <div className="glass rounded-xl p-4">
       <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
-        <Target className="w-4 h-4 text-[#7C3AED]" /> Topic Mastery
+        <Target className="w-4 h-4 text-primary" /> Topic Mastery
       </h3>
       <div className="grid grid-cols-3 gap-2 mb-4 text-center">
         <div className="bg-secondary/50 rounded-lg p-2">
@@ -55,7 +55,7 @@ const MasteryPanel = ({ subjectsWithMastery, onAddSubject, onAddTopic, onRemoveS
           onKeyDown={e => e.key === 'Enter' && newSubject.trim() && (onAddSubject(newSubject.trim()), setNewSubject(''))}
           className="flex-1 bg-secondary/50 rounded-md px-2 py-1.5 text-xs border border-border/50 outline-none focus:border-primary/60" />
         <button onClick={() => { if (newSubject.trim()) { onAddSubject(newSubject.trim()); setNewSubject(''); } }}
-          className="px-2 py-1.5 rounded-md bg-[#7C3AED]/15 text-[#7C3AED] hover:bg-[#7C3AED]/25 transition-colors">
+          className="px-2 py-1.5 rounded-md bg-primary/15 text-primary hover:bg-primary/25 transition-colors">
           <Plus className="w-3.5 h-3.5" />
         </button>
       </div>
@@ -100,7 +100,7 @@ const MasteryPanel = ({ subjectsWithMastery, onAddSubject, onAddTopic, onRemoveS
                             </div>
                             <span className="text-[10px] font-semibold w-8 text-right" style={{color:tl.color}}>{sc}%</span>
                             <button onClick={() => setQuizTopic({topicId:topic.id,topicName:topic.name,subjectName:subject.name,mastery:sc})}
-                              className="opacity-0 group-hover/t:opacity-100 p-0.5 hover:bg-[#7C3AED]/20 rounded text-[#C084FC] transition-all" title="Quiz this topic">
+                              className="opacity-0 group-hover/t:opacity-100 p-0.5 hover:bg-primary/20 rounded text-primary transition-all" title="Quiz this topic">
                               <BookOpen className="w-2.5 h-2.5" />
                             </button>
                             <button onClick={() => onRemoveTopic(topic.id)}
@@ -117,13 +117,13 @@ const MasteryPanel = ({ subjectsWithMastery, onAddSubject, onAddTopic, onRemoveS
                           onKeyDown={e => e.key === 'Enter' && newTopic.trim() && (onAddTopic({name:newTopic.trim(),subjectId:subject.id}), setNewTopic(''), setAddingTo(null))}
                           className="flex-1 bg-background/40 rounded px-2 py-1 text-[11px] border border-border/50 outline-none" />
                         <button onClick={() => { if (newTopic.trim()) { onAddTopic({name:newTopic.trim(),subjectId:subject.id}); setNewTopic(''); setAddingTo(null); } }}
-                          className="px-2 py-1 rounded bg-[#7C3AED]/20 text-[#7C3AED] text-[11px]">Add</button>
+                          className="px-2 py-1 rounded bg-primary/20 text-primary text-[11px]">Add</button>
                         <button onClick={() => { setAddingTo(null); setNewTopic(''); }}
                           className="px-2 py-1 rounded text-muted-foreground text-[11px]">X</button>
                       </div>
                     ) : (
                       <button onClick={() => setAddingTo(subject.id)}
-                        className="text-[11px] text-[#7C3AED] hover:text-[#C084FC] flex items-center gap-1 mt-1">
+                        className="text-[11px] text-primary hover:text-primary/80 flex items-center gap-1 mt-1">
                         <Plus className="w-3 h-3" /> Add topic
                       </button>
                     )}

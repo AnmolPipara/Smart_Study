@@ -173,9 +173,9 @@ const AiPlannerDialog = ({ open, onClose }: AiPlannerDialogProps) => {
                         setSelectedSubjects(subjectsWithMastery.map(s => s.subject.name));
                       }
                     }}
-                    className="w-full px-3 py-2 text-xs text-left hover:bg-primary/10 flex items-center gap-2 border-b border-border/40 font-semibold text-[#C084FC]"
+                    className="w-full px-3 py-2 text-xs text-left hover:bg-primary/10 flex items-center gap-2 border-b border-border/40 font-semibold text-primary"
                   >
-                    <div className={`w-3.5 h-3.5 rounded border flex items-center justify-center ${selectedSubjects.length === subjectsWithMastery.length && subjectsWithMastery.length > 0 ? 'bg-[#7C3AED] border-[#7C3AED]' : 'border-muted-foreground/50'}`}>
+                    <div className={`w-3.5 h-3.5 rounded border flex items-center justify-center ${selectedSubjects.length === subjectsWithMastery.length && subjectsWithMastery.length > 0 ? 'bg-primary border-primary' : 'border-muted-foreground/50'}`}>
                       {selectedSubjects.length === subjectsWithMastery.length && subjectsWithMastery.length > 0 && <Check className="w-2.5 h-2.5 text-white" />}
                     </div>
                     Select All
@@ -193,7 +193,7 @@ const AiPlannerDialog = ({ open, onClose }: AiPlannerDialogProps) => {
                         }}
                         className="w-full px-3 py-2 text-xs text-left hover:bg-primary/10 flex items-center gap-2"
                       >
-                        <div className={`w-3.5 h-3.5 rounded border flex items-center justify-center ${isSelected ? 'bg-[#7C3AED] border-[#7C3AED]' : 'border-muted-foreground/50'}`}>
+                        <div className={`w-3.5 h-3.5 rounded border flex items-center justify-center ${isSelected ? 'bg-primary border-primary' : 'border-muted-foreground/50'}`}>
                           {isSelected && <Check className="w-2.5 h-2.5 text-white" />}
                         </div>
                         <span className="flex-1 truncate">{subject.name}</span>
@@ -211,7 +211,7 @@ const AiPlannerDialog = ({ open, onClose }: AiPlannerDialogProps) => {
               {selectedSubjects.length > 0 && (
                 <div className="flex flex-wrap gap-1 mt-1.5">
                   {selectedSubjects.map(name => (
-                    <span key={name} className="px-1.5 py-0.5 rounded bg-[#7C3AED]/15 text-[#C084FC] text-[10px] font-medium flex items-center gap-1">
+                    <span key={name} className="px-1.5 py-0.5 rounded bg-primary/15 text-primary text-[10px] font-medium flex items-center gap-1">
                       {name}
                       <button type="button" onClick={() => setSelectedSubjects(prev => prev.filter(s => s !== name))} className="hover:text-white">×</button>
                     </span>
@@ -248,9 +248,9 @@ const AiPlannerDialog = ({ open, onClose }: AiPlannerDialogProps) => {
                         setSelectedTopics(topicsForSelectedSubjects.map(t => t.name));
                       }
                     }}
-                    className="w-full px-3 py-2 text-xs text-left hover:bg-primary/10 flex items-center gap-2 border-b border-border/40 font-semibold text-[#C084FC]"
+                    className="w-full px-3 py-2 text-xs text-left hover:bg-primary/10 flex items-center gap-2 border-b border-border/40 font-semibold text-primary"
                   >
-                    <div className={`w-3.5 h-3.5 rounded border flex items-center justify-center ${selectedTopics.length === topicsForSelectedSubjects.length && topicsForSelectedSubjects.length > 0 ? 'bg-[#7C3AED] border-[#7C3AED]' : 'border-muted-foreground/50'}`}>
+                    <div className={`w-3.5 h-3.5 rounded border flex items-center justify-center ${selectedTopics.length === topicsForSelectedSubjects.length && topicsForSelectedSubjects.length > 0 ? 'bg-blue-600 border-blue-600' : 'border-muted-foreground/50'}`}>
                       {selectedTopics.length === topicsForSelectedSubjects.length && topicsForSelectedSubjects.length > 0 && <Check className="w-2.5 h-2.5 text-white" />}
                     </div>
                     Select All
@@ -268,7 +268,7 @@ const AiPlannerDialog = ({ open, onClose }: AiPlannerDialogProps) => {
                         }}
                         className="w-full px-3 py-2 text-xs text-left hover:bg-primary/10 flex items-center gap-2"
                       >
-                        <div className={`w-3.5 h-3.5 rounded border flex items-center justify-center ${isSelected ? 'bg-[#7C3AED] border-[#7C3AED]' : 'border-muted-foreground/50'}`}>
+                        <div className={`w-3.5 h-3.5 rounded border flex items-center justify-center ${isSelected ? 'bg-primary border-primary' : 'border-muted-foreground/50'}`}>
                           {isSelected && <Check className="w-2.5 h-2.5 text-white" />}
                         </div>
                         <span className="flex-1 truncate">{name}</span>
@@ -302,8 +302,8 @@ const AiPlannerDialog = ({ open, onClose }: AiPlannerDialogProps) => {
           <div className="flex flex-col min-h-0">
             <h3 className="text-xs font-semibold mb-2">AI Plan</h3>
             <div className="flex-1 rounded-lg bg-secondary/40 border border-border/40 p-3 overflow-auto text-xs space-y-2">
-              <div className="rounded-md bg-[#7C3AED]/10 border border-[#7C3AED]/30 px-2.5 py-2 mb-2">
-                <p className="text-[11px] font-semibold text-[#7C3AED] mb-0.5">\u2139\ufe0f Mastery-aware plan</p>
+              <div className="rounded-md bg-primary/10 border border-primary/30 px-2.5 py-2 mb-2">
+                <p className="text-[11px] font-semibold text-primary mb-0.5">\u2139\ufe0f Mastery-aware plan</p>
                 <p className="text-[10px] text-muted-foreground">
                   AI will prioritize weak topics and schedule revisions for due topics.
                 </p>

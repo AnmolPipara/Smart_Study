@@ -105,7 +105,7 @@ const NotesSidebar = ({
         <div
           className={`w-full flex items-center text-left text-xs rounded-md transition-colors ${
             isSelected
-              ? 'bg-[#7C3AED]/15 text-[#7C3AED] font-semibold'
+              ? 'bg-[blue-500]/15 text-[blue-500] font-semibold'
               : 'hover:bg-secondary/80 text-muted-foreground'
           }`}
           style={{ paddingLeft: 8 + depth * 14 }}
@@ -114,7 +114,7 @@ const NotesSidebar = ({
           {isFolder ? (
             <button type="button" onClick={() => toggleExpand(node.id)} className="p-1 shrink-0">
               {isExpanded
-                ? <ChevronDown className="w-3 h-3 text-[#7C3AED]" />
+                ? <ChevronDown className="w-3 h-3 text-[blue-500]" />
                 : <ChevronRight className="w-3 h-3 text-muted-foreground" />}
             </button>
           ) : (
@@ -125,7 +125,7 @@ const NotesSidebar = ({
 
           {/* Icon */}
           {isFolder ? (
-            <Folder className={`w-3.5 h-3.5 mr-1.5 shrink-0 ${isExpanded ? 'text-[#7C3AED]' : 'text-amber-500/70'}`} />
+            <Folder className={`w-3.5 h-3.5 mr-1.5 shrink-0 ${isExpanded ? 'text-[blue-500]' : 'text-amber-500/70'}`} />
           ) : null}
 
           {/* Name or rename input */}
@@ -161,7 +161,7 @@ const NotesSidebar = ({
                   <button
                     type="button"
                     onClick={(e) => openCreateMenu(e, node.id)}
-                    className="p-0.5 rounded hover:bg-primary/20 text-[#7C3AED]"
+                    className="p-0.5 rounded hover:bg-primary/20 text-[blue-500]"
                     title="Add item inside"
                   >
                     <Plus className="w-3 h-3" />
@@ -182,7 +182,7 @@ const NotesSidebar = ({
                         onClick={() => handleCreate('note')}
                         className="w-full px-3 py-1.5 text-xs text-left hover:bg-primary/10 flex items-center gap-2 text-foreground"
                       >
-                        <FilePlus className="w-3 h-3 text-[#7C3AED]" />
+                        <FilePlus className="w-3 h-3 text-[blue-500]" />
                         New Note
                       </button>
                     </div>
@@ -233,14 +233,14 @@ const NotesSidebar = ({
         {!collapsed && (
           <>
             <div className="flex items-center gap-1.5 flex-1 min-w-0">
-              <NotebookTabs className="w-4 h-4 text-[#7C3AED] shrink-0" />
+              <NotebookTabs className="w-4 h-4 text-[blue-500] shrink-0" />
               <span className="text-xs font-semibold truncate">Smart Notes</span>
             </div>
             <div className="relative" ref={createMenuOpen && createMenuTarget === null ? createMenuRef : undefined}>
               <button
                 type="button"
                 onClick={(e) => openCreateMenu(e, null)}
-                className="p-1 rounded-md bg-[#7C3AED]/10 text-[#7C3AED] hover:bg-[#7C3AED]/20 shrink-0 transition-colors"
+                className="p-1 rounded-md bg-[blue-500]/10 text-[blue-500] hover:bg-[blue-500]/20 shrink-0 transition-colors"
                 title="New"
               >
                 <Plus className="w-3 h-3" />
@@ -261,7 +261,7 @@ const NotesSidebar = ({
                     onClick={() => handleCreate('note')}
                     className="w-full px-3 py-2 text-xs text-left hover:bg-primary/10 flex items-center gap-2 text-foreground"
                   >
-                    <FilePlus className="w-3.5 h-3.5 text-[#7C3AED]" />
+                    <FilePlus className="w-3.5 h-3.5 text-[blue-500]" />
                     New Note
                   </button>
                 </div>
@@ -280,7 +280,7 @@ const NotesSidebar = ({
                 No notes yet
               </p>
               <p className="text-[10px] text-muted-foreground/60">
-                Click <span className="text-[#7C3AED] font-semibold">+</span> to create a folder or note
+                Click <span className="text-[blue-500] font-semibold">+</span> to create a folder or note
               </p>
             </div>
           ) : (
