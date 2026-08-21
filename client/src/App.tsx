@@ -38,10 +38,7 @@ const App = () => (
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>}>
                   <Route index element={<Navigate to="tasks" replace />} />
-                  <Route path="tasks" element={null} />
-                  <Route path="notes" element={null} />
-                  <Route path="analytics" element={null} />
-                  <Route path="mastery" element={null} />
+                  <Route path=":section" element={null} />
                 </Route>
                 <Route path="*" element={<NotFound />} />
               </Routes>
