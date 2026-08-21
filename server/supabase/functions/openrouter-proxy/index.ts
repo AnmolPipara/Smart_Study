@@ -11,7 +11,7 @@ const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
 
 const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
 const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
-const GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
+const GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -91,7 +91,7 @@ async function callOpenRouter(prompt: string): Promise<{content: string; provide
   const response = await fetch(OPENROUTER_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: "Bearer " + OPENROUTER_API_KEY, "X-Title": "Smart Study Planner" },
-    body: JSON.stringify({ model: "google/gemini-2.0-flash-001:free", messages: buildMessages(prompt), temperature: 0.4 }),
+    body: JSON.stringify({ model: "google/gemma-4-26b-a4b-it:free", messages: buildMessages(prompt), temperature: 0.4 }),
   });
   if (!response.ok) { const t = await response.text(); throw new Error("OpenRouter " + response.status + ": " + t); }
   const data = await response.json();
@@ -105,7 +105,7 @@ async function callGroq(prompt: string): Promise<{content: string; provider: str
   const response = await fetch(GROQ_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: "Bearer " + GROQ_API_KEY },
-    body: JSON.stringify({ model: "llama-3.1-8b-instant", messages: buildMessages(prompt), temperature: 0.4 }),
+    body: JSON.stringify({ model: "openai/gpt-oss-20b", messages: buildMessages(prompt), temperature: 0.4 }),
   });
   if (!response.ok) { const t = await response.text(); throw new Error("Groq " + response.status + ": " + t); }
   const data = await response.json();
