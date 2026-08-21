@@ -156,6 +156,39 @@ const NotesSidebar = ({
           {/* Actions */}
           {!isRenaming && (
             <div className="flex items-center gap-0.5 mr-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+              {isFolder && (
+                <div className="relative" ref={createMenuTarget === node.id ? createMenuRef : undefined}>
+                  <button
+                    type="button"
+                    onClick={(e) => openCreateMenu(e, node.id)}
+                    className="p-0.5 rounded hover:bg-primary/20 text-[#7C3AED]"
+                    title="Add item inside"
+                  >
+                    <Plus className="w-3 h-3" />
+                  </button>
+                  {createMenuOpen && createMenuTarget === node.id && (
+                    <div className="absolute right-0 top-full mt-1 z-50 bg-secondary border border-border/60 rounded-lg shadow-lg w-36 overflow-hidden">
+                      <button
+                        type="button"
+                        onClick={() => handleCreate('folder')}
+                        className="w-full px-3 py-1.5 text-xs text-left hover:bg-primary/10 flex items-center gap-2 text-foreground"
+                      >
+                        <FolderPlus className="w-3 h-3 text-amber-500" />
+                        New Folder
+                      </button>
+                      <div className="border-t border-border/40" />
+                      <button
+                        type="button"
+                        onClick={() => handleCreate('note')}
+                        className="w-full px-3 py-1.5 text-xs text-left hover:bg-primary/10 flex items-center gap-2 text-foreground"
+                      >
+                        <FilePlus className="w-3 h-3 text-[#7C3AED]" />
+                        New Note
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
               {onDelete && (
                 <button
                   type="button"
@@ -203,7 +236,7 @@ const NotesSidebar = ({
               <NotebookTabs className="w-4 h-4 text-[#7C3AED] shrink-0" />
               <span className="text-xs font-semibold truncate">Smart Notes</span>
             </div>
-            <div className="relative" ref={createMenuRef}>
+            <div className="relative" ref={createMenuOpen && createMenuTarget === null ? createMenuRef : undefined}>
               <button
                 type="button"
                 onClick={(e) => openCreateMenu(e, null)}
