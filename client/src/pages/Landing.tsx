@@ -119,7 +119,7 @@ const Landing = () => {
       </nav>
 
       {/* Hero Content */}
-      <main className="flex-1 flex flex-col items-center justify-center px-6 relative z-10 w-full max-w-7xl mx-auto pt-8 pb-16">
+      <main className="flex-1 flex flex-col items-center justify-center px-6 relative z-10 w-full max-w-7xl mx-auto pt-4 pb-16">
         {/* Floating UI elements */}
         <div className="relative w-full max-w-5xl mx-auto mb-8">
           {/* Sticky note - top left */}
@@ -177,7 +177,7 @@ const Landing = () => {
           </div>
 
           {/* Today's tasks card - bottom left */}
-          <div className="absolute left-4 bottom-0 md:left-12 md:-bottom-4 w-52 md:w-64 rotate-[-3deg] z-20 animate-[float_6s_ease-in-out_infinite_2s]">
+          <div className="absolute left-4 bottom-0 md:left-12 md:bottom-4 w-48 md:w-56 rotate-[-3deg] z-20 animate-[float_6s_ease-in-out_infinite_2s]">
             <div className="bg-white rounded-2xl p-4 shadow-lg border border-gray-100">
               <p className="text-sm font-semibold text-gray-900 mb-3">Today's tasks</p>
               <div className="space-y-3">
@@ -215,7 +215,7 @@ const Landing = () => {
           </div>
 
           {/* Integrations card - bottom right */}
-          <div className="absolute right-4 bottom-0 md:right-12 md:-bottom-2 w-44 md:w-52 rotate-[2deg] z-20 animate-[float_5.5s_ease-in-out_infinite_1.5s]">
+          <div className="absolute right-4 bottom-0 md:right-12 md:bottom-4 w-40 md:w-48 rotate-[2deg] z-20 animate-[float_5.5s_ease-in-out_infinite_1.5s]">
             <div className="bg-white rounded-2xl p-4 shadow-lg border border-gray-100">
               <p className="text-sm font-semibold text-gray-900 mb-3">100+ Integrations</p>
               <div className="flex gap-2 flex-wrap">
@@ -233,7 +233,7 @@ const Landing = () => {
           </div>
 
           {/* Hero heading */}
-          <div className="text-center relative z-30 pt-16 md:pt-24">
+          <div className="text-center relative z-30 pt-20 md:pt-28">
             <h1
               className="text-5xl md:text-7xl lg:text-[5.5rem] font-bold tracking-tight leading-[1.05] mb-6"
               style={{ fontFamily: "'Space Grotesk', sans-serif" }}
@@ -248,9 +248,11 @@ const Landing = () => {
             </p>
 
             {/* CTA Button */}
-            {renderAuthButton(
-              "bg-blue-600 text-white px-8 py-4 rounded-full text-base font-semibold hover:bg-blue-700 transition-all shadow-md hover:shadow-lg flex items-center gap-3 mx-auto"
-            )}
+            <div className="flex justify-center">
+              {renderAuthButton(
+                "inline-flex items-center gap-3 bg-blue-600 text-white px-8 py-3.5 rounded-full text-base font-semibold hover:bg-blue-700 transition-all shadow-md hover:shadow-lg"
+              )}
+            </div>
           </div>
         </div>
       </main>
@@ -306,9 +308,11 @@ const Landing = () => {
             <p className="text-gray-500 text-lg mb-8 max-w-md mx-auto relative z-10">
               Join thousands of students who have transformed their study habits.
             </p>
-            {renderAuthButton(
-              "bg-blue-600 text-white px-8 py-4 rounded-full text-base font-semibold hover:bg-blue-700 transition-all shadow-md hover:shadow-lg flex items-center gap-3 mx-auto relative z-10"
-            )}
+            <div className="flex justify-center relative z-10">
+              {renderAuthButton(
+                "inline-flex items-center gap-3 bg-blue-600 text-white px-8 py-3.5 rounded-full text-base font-semibold hover:bg-blue-700 transition-all shadow-md hover:shadow-lg"
+              )}
+            </div>
           </div>
         </div>
       </section>
