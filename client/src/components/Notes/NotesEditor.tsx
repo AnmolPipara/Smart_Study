@@ -222,14 +222,26 @@ const NotesEditor = ({ note, onChange }: NotesEditorProps) => {
           </button>
         </div>
 
-        <div className="flex-1 overflow-auto px-3 py-2 space-y-3 text-xs">
+        <div className="flex-1 overflow-auto text-xs">
+          {!summary && !questions && (
+            <div className="px-3 py-4">
+              <p className="text-muted-foreground/70">
+                Use <span className="font-semibold">Summarize</span> to get a short overview, key points,
+                and flashcards for this note, or generate practice questions for a specific topic.
+              </p>
+            </div>
+          )}
+
           {summary && (
-            <div className="space-y-1.5">
-              <p className="font-semibold text-foreground">Summary</p>
-              <p className="text-muted-foreground">{summary.summary}</p>
+            <div className="px-3 py-2 border-b border-border/30">
+              <div className="flex items-center gap-1.5 mb-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-[#7C3AED]" />
+                <p className="font-semibold text-foreground text-xs">Summary</p>
+              </div>
+              <p className="text-muted-foreground leading-relaxed mb-2">{summary.summary}</p>
               {summary.key_points.length > 0 && (
-                <div>
-                  <p className="font-semibold text-foreground mt-2 mb-1">Key points</p>
+                <div className="mt-2">
+                  <p className="font-semibold text-foreground mb-1">Key Points</p>
                   <ul className="list-disc list-inside space-y-0.5 text-muted-foreground">
                     {summary.key_points.map((kp) => (
                       <li key={kp}>{kp}</li>
@@ -238,14 +250,14 @@ const NotesEditor = ({ note, onChange }: NotesEditorProps) => {
                 </div>
               )}
               {summary.flashcards.length > 0 && (
-                <div>
-                  <p className="font-semibold text-foreground mt-2 mb-1">Flashcards</p>
+                <div className="mt-2">
+                  <p className="font-semibold text-foreground mb-1">Flashcards</p>
                   <ul className="space-y-1">
                     {summary.flashcards.map((fc) => (
-                      <li key={fc.question}>
-                        <span className="font-semibold">Q:</span> {fc.question}
+                      <li key={fc.question} className="bg-background/40 rounded-md px-2 py-1.5 border border-border/30">
+                        <span className="font-semibold text-[#C084FC]">Q:</span> {fc.question}
                         <br />
-                        <span className="font-semibold">A:</span> {fc.answer}
+                        <span className="font-semibold text-green-400">A:</span> {fc.answer}
                       </li>
                     ))}
                   </ul>
@@ -255,23 +267,24 @@ const NotesEditor = ({ note, onChange }: NotesEditorProps) => {
           )}
 
           {questions && (
-            <div className="space-y-1.5">
-              <p className="font-semibold text-foreground">
-                Questions ({questions.topic} – {questions.difficulty})
-              </p>
-              <ol className="list-decimal list-inside space-y-0.5 text-muted-foreground">
+            <div className="px-3 py-2">
+              <div className="flex items-center gap-1.5 mb-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
+                <p className="font-semibold text-foreground text-xs">
+                  Practice Questions
+                  <span className="text-muted-foreground font-normal ml-1.5">
+                    {questions.topic} — {questions.difficulty}
+                  </span>
+                </p>
+              </div>
+              <ol className="list-decimal list-inside space-y-1.5 text-muted-foreground">
                 {questions.questions.map((q) => (
-                  <li key={q}>{q}</li>
+                  <li key={q} className="bg-background/40 rounded-md px-2 py-1.5 border border-border/30">
+                    {q}
+                  </li>
                 ))}
               </ol>
             </div>
-          )}
-
-          {!summary && !questions && (
-            <p className="text-muted-foreground/70">
-              Use <span className="font-semibold">Summarize</span> to get a short overview, key points,
-              and flashcards for this note, or generate practice questions for a specific topic.
-            </p>
           )}
         </div>
       </aside>

@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { SubjectWithMastery } from '@/types/mastery';
 import { getMasteryLevel, getMasteryBarColor } from '@/types/mastery';
-import { Plus, Trash2, ChevronDown, ChevronRight, Target } from 'lucide-react';
+import { Plus, Trash2, ChevronDown, ChevronRight, Target, BookOpen } from 'lucide-react';
+import RevisionQuiz from './RevisionQuiz';
 
 interface Props {
   subjectsWithMastery: SubjectWithMastery[];
@@ -17,6 +18,7 @@ const MasteryPanel = ({ subjectsWithMastery, onAddSubject, onAddTopic, onRemoveS
   const [newSubject, setNewSubject] = useState('');
   const [newTopic, setNewTopic] = useState('');
   const [addingTo, setAddingTo] = useState<string | null>(null);
+  const [quizTopic, setQuizTopic] = useState<{topicId:string;topicName:string;subjectName:string;mastery:number} | null>(null);
 
   const totalTopics = subjectsWithMastery.reduce((s, x) => s + x.topics.length, 0);
   const totalScored = subjectsWithMastery.reduce((s, x) => s + x.topics.filter(t => t.mastery).length, 0);
@@ -97,6 +99,10 @@ const MasteryPanel = ({ subjectsWithMastery, onAddSubject, onAddTopic, onRemoveS
                               <div className={`h-full rounded-full ${getMasteryBarColor(sc)}`} style={{width:`${sc}%`}} />
                             </div>
                             <span className="text-[10px] font-semibold w-8 text-right" style={{color:tl.color}}>{sc}%</span>
+                            <button onClick={() => setQuizTopic({topicId:topic.id,topicName:topic.name,subjectName:subject.name,mastery:sc})}
+                              className="opacity-0 group-hover/t:opacity-100 p-0.5 hover:bg-[#7C3AED]/20 rounded text-[#C084FC] transition-all" title="Quiz this topic">
+                              <BookOpen className="w-2.5 h-2.5" />
+                            </button>
                             <button onClick={() => onRemoveTopic(topic.id)}
                               className="opacity-0 group-hover/t:opacity-100 p-0.5 hover:bg-red-500/20 rounded text-red-400 transition-all">
                               <Trash2 className="w-2.5 h-2.5" />
@@ -127,6 +133,16 @@ const MasteryPanel = ({ subjectsWithMastery, onAddSubject, onAddTopic, onRemoveS
             );
           })}
         </div>
+      )}
+      {quizTopic && (
+        <RevisionQuiz
+          topicId={quizTopic.topicId}
+          topicName={quizTopic.topicName}
+          subjectName={quizTopic.subjectName}
+          currentMastery={quizTopic.mastery}
+          onClose={() => setQuizTopic(null)}
+          onComplete={() => setQuizTopic(null)}
+        />
       )}
     </div>
   );

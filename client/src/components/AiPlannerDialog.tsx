@@ -13,7 +13,7 @@ const AiPlannerDialog = ({ open, onClose }: AiPlannerDialogProps) => {
   const { subjectsWithMastery, revisionsDue } = useMastery();
   const [examName, setExamName] = useState('');
   const [planDays, setPlanDays] = useState('10');
-  const [subjects, setSubjects] = useState('');
+  const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
   const [topics, setTopics] = useState('');
   const [difficulty, setDifficulty] = useState<'easy' | 'medium' | 'hard'>('medium');
   const [loading, setLoading] = useState(false);
@@ -31,10 +31,11 @@ const AiPlannerDialog = ({ open, onClose }: AiPlannerDialogProps) => {
     setLoading(true);
     setPlan(null);
     try {
+      const subjectNames = selectedSubjects.join(', ');
       const result = await generateStudyPlan({
         examName,
         days: daysNum,
-        subjects,
+        subjects: subjectNames,
         topics,
         difficulty,
         masteryData: subjectsWithMastery,
@@ -112,14 +113,52 @@ const AiPlannerDialog = ({ open, onClose }: AiPlannerDialogProps) => {
 
             <div>
               <label className="text-xs font-medium text-muted-foreground mb-1.5 block">
-                Subjects (comma separated)
+                Subjects {subjectsWithMastery.length > 0 ? '(from your mastery list)' : ''}
               </label>
-              <input
-                value={subjects}
-                onChange={(e) => setSubjects(e.target.value)}
-                placeholder="Operating Systems, DBMS, Computer Networks"
-                className="w-full bg-secondary rounded-lg px-3 py-2.5 text-xs border border-border/50 focus:border-primary/60 focus:outline-none"
-              />
+              {subjectsWithMastery.length > 0 ? (
+                <div className="flex flex-wrap gap-1.5">
+                  {subjectsWithMastery.map(({ subject, overallScore }) => {
+                    const isSelected = selectedSubjects.includes(subject.name);
+                    return (
+                      <button
+                        key={subject.id}
+                        type="button"
+                        onClick={() => {
+                          setSelectedSubjects(prev =>
+                            isSelected
+                              ? prev.filter(s => s !== subject.name)
+                              : [...prev, subject.name]
+                          );
+                        }}
+                        className={`px-2.5 py-1.5 rounded-lg text-[11px] font-medium border transition-all ${
+                          isSelected
+                            ? 'bg-[#7C3AED]/20 border-[#7C3AED]/60 text-[#C084FC]'
+                            : 'bg-secondary/50 border-border/50 text-muted-foreground hover:border-primary/40'
+                        }`}
+                      >
+                        {subject.name}
+                        <span className="ml-1 text-[10px] opacity-70">{overallScore}%</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : (
+                <p className="text-[10px] text-muted-foreground/70">
+                  Add subjects in the Mastery section first, or type them manually below.
+                </p>
+              )}
+              {subjectsWithMastery.length > 0 && (
+                <input
+                  value={selectedSubjects.filter(s => !subjectsWithMastery.some(({ subject }) => subject.name === s)).join(', ')}
+                  onChange={(e) => {
+                    const manual = e.target.value.split(',').map(s => s.trim()).filter(Boolean);
+                    const existing = selectedSubjects.filter(s => subjectsWithMastery.some(({ subject }) => subject.name === s));
+                    setSelectedSubjects([...existing, ...manual]);
+                  }}
+                  placeholder="Or type additional subjects..."
+                  className="w-full mt-1.5 bg-secondary rounded-lg px-3 py-2 text-xs border border-border/50 focus:border-primary/60 focus:outline-none"
+                />
+              )}
             </div>
 
             <div>
