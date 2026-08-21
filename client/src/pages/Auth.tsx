@@ -69,9 +69,8 @@ const Auth = () => {
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-3 justify-center mb-8">
-          <AppLogo size={48} />
-          <span className="text-2xl font-bold tracking-tight">Studora</span>
+        <Link to="/" className="flex justify-center mb-8">
+          <AppLogo size={64} />
         </Link>
 
         <div className="glass rounded-2xl p-8 shadow-card">

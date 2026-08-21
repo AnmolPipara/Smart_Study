@@ -86,13 +86,8 @@ const Landing = () => {
       {/* Nav */}
       <nav className="w-full px-6 py-5 z-50 relative">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-white shadow-sm border border-gray-200 flex items-center justify-center">
-              <AppLogo size={28} />
-            </div>
-            <span className="text-xl font-bold tracking-tight text-gray-900" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-              Studora
-            </span>
+          <div className="flex items-center">
+            <AppLogo size={40} />
           </div>
 
           {/* Desktop nav links */}
@@ -166,8 +161,8 @@ const Landing = () => {
 
           {/* Center logo/icon */}
           <div className="flex justify-center pt-16 md:pt-20 relative z-30">
-            <div className="w-16 h-16 bg-white rounded-2xl shadow-lg border border-gray-100 flex items-center justify-center overflow-hidden">
-              <img src="/studora-logo.png" alt="Studora" className="w-12 h-12 object-contain" />
+            <div className="w-20 h-20 md:w-24 md:h-24 bg-white rounded-2xl shadow-lg border border-gray-100 flex items-center justify-center overflow-hidden">
+              <img src="/studora-logo.png" alt="Studora" className="w-14 h-14 md:w-16 md:h-16 object-contain" />
             </div>
           </div>
 

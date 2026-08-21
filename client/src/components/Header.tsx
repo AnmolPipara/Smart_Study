@@ -38,13 +38,8 @@ const Header = () => {
   return (
     <header className="glass border-b border-border/40 px-6 py-3.5 sticky top-0 z-50">
       <div className="max-w-full mx-auto flex items-center justify-between">
-        {/* Logo */}
-        <div className="flex items-center gap-3">              <div className="w-9 h-9 rounded-xl bg-white dark:bg-secondary flex items-center justify-center shadow-sm border border-border/50">
-              <AppLogo size={28} />
-            </div>
-          <div>
-            <h1 className="text-lg font-bold tracking-tight">Studora</h1>
-            <p className="text-[11px] text-muted-foreground">Plan smarter, study better</p>
+        {/* Logo */}          <div className="flex items-center">
+            <AppLogo size={36} />
           </div>
         </div>
 

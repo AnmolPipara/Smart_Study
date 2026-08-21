@@ -62,9 +62,8 @@ const ResetPassword = () => {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        <div className="flex items-center gap-3 justify-center mb-8">
-          <AppLogo size={48} />
-          <span className="text-2xl font-bold tracking-tight">Studora</span>
+        <div className="flex justify-center mb-8">
+          <AppLogo size={64} />
         </div>
 
         <div className="glass rounded-2xl p-8 shadow-card">
