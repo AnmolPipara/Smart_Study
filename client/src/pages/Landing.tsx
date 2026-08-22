@@ -128,8 +128,6 @@ const Landing = () => {
                 <div className="w-3 h-3 rounded-full bg-blue-400" />
               </div>
             </div>
-            {/* Push pin */}
-            <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-red-400 rounded-full shadow-sm border border-red-300" />
           </div>
 
           {/* Checklist card - left */}
@@ -278,8 +276,8 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* About Us Section */}
-      <section id="about-us" className="px-6 py-20 relative z-20">
+      {/* CTA Section */}
+      <section className="px-6 py-20 relative z-20">
         <div className="max-w-4xl mx-auto text-center">
           <div className="bg-white rounded-3xl p-12 md:p-16 shadow-sm border border-gray-100 relative overflow-hidden">
             <div
@@ -289,29 +287,40 @@ const Landing = () => {
                 backgroundSize: '20px 20px',
               }}
             />
-            <div className="relative z-10">
-              <div className="flex justify-center mb-6">
-                <img src="/studora-logo.png" alt="Studora" className="w-16 h-16 object-contain" />
-              </div>
-              <h2
-                className="text-3xl md:text-4xl font-bold mb-4 text-gray-900"
-                style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-              >
-                About Studora
-              </h2>
-              <p className="text-gray-500 text-lg mb-6 max-w-lg mx-auto leading-relaxed">
-                Studora is a smart study planner built to help students organize their learning, track progress, and achieve their academic goals — all in one place.
-              </p>
-              <div className="inline-flex items-center gap-3 bg-gray-50 border border-gray-100 rounded-full px-6 py-3">
-                <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-sm">
-                  AP
-                </div>
-                <div className="text-left">
-                  <p className="text-sm font-semibold text-gray-900">Anmol Pipara</p>
-                  <p className="text-xs text-gray-500">Creator & Developer</p>
-                </div>
-              </div>
+            <h2
+              className="text-3xl md:text-4xl font-bold mb-4 text-gray-900 relative z-10"
+              style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+            >
+              Ready to study smarter?
+            </h2>
+            <p className="text-gray-500 text-lg mb-8 max-w-md mx-auto relative z-10">
+              Join thousands of students who have transformed their study habits.
+            </p>
+            <div className="flex justify-center relative z-10">
+              {renderAuthButton(
+                "inline-flex items-center gap-3 bg-blue-600 text-white px-8 py-3.5 rounded-full text-base font-semibold hover:bg-blue-700 transition-all shadow-md hover:shadow-lg"
+              )}
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* About Us Section */}
+      <section id="about us" className="px-6 py-16 relative z-20">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="bg-white rounded-3xl p-10 md:p-14 shadow-sm border border-gray-100">
+            <h2
+              className="text-2xl md:text-3xl font-bold mb-3 text-gray-900"
+              style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+            >
+              About Us
+            </h2>
+            <p className="text-gray-500 text-lg mb-2">
+              Studora was built with a passion for making studying easier and more effective.
+            </p>
+            <p className="text-gray-900 font-semibold text-base">
+              Made by <span className="text-blue-600">Anmol Pipara</span>
+            </p>
           </div>
         </div>
       </section>
@@ -319,7 +328,7 @@ const Landing = () => {
       {/* Footer */}
       <footer className="w-full border-t border-gray-200/60 py-8 mt-auto z-10 bg-white/50">
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between text-gray-400 text-sm">
-          <span>© {new Date().getFullYear()} Studora by Anmol Pipara. All rights reserved.</span>
+          <span>© {new Date().getFullYear()} Studora. All rights reserved.</span>
           <div className="flex items-center gap-6">
             <a href="#" className="hover:text-gray-600 transition-colors">Privacy</a>
             <a href="#" className="hover:text-gray-600 transition-colors">Terms</a>
