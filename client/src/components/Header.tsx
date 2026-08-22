@@ -38,9 +38,9 @@ const Header = () => {
   return (
     <header className="glass border-b border-border/40 px-6 py-3.5 sticky top-0 z-50">
       <div className="max-w-full mx-auto flex items-center justify-between">
-        {/* Logo */}          <div className="flex items-center">
-            <AppLogo size={36} />
-          </div>
+        {/* Logo */}
+        <div className="flex items-center">
+          <AppLogo size={36} />
         </div>
 
         {/* Theme Toggle + User Profile */}
