@@ -7,7 +7,7 @@ const AppLogo = ({ size = 40, showName = false }: AppLogoProps) => {
   return (
     <div className="flex items-center gap-2">
       <img
-        src="/studora-logo.png"
+        src="/STUDORALOGO.png"
         alt="Studora"
         width={size}
         height={size}

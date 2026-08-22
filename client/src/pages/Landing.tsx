@@ -160,7 +160,7 @@ const Landing = () => {
           {/* Center logo/icon */}
           <div className="flex justify-center pt-16 md:pt-20 relative z-30">
             <div className="w-20 h-20 md:w-24 md:h-24 bg-white rounded-2xl shadow-lg border border-gray-100 flex items-center justify-center overflow-hidden">
-              <img src="/studora-logo.png" alt="Studora" className="w-14 h-14 md:w-16 md:h-16 object-contain" />
+              <img src="/STUDORALOGO.png" alt="Studora" className="w-14 h-14 md:w-16 md:h-16 object-contain mix-blend-multiply" />
             </div>
           </div>
 
