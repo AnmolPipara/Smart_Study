@@ -13,11 +13,22 @@ const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
 const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
 const GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-};
+const ALLOWED_ORIGINS = [
+  "https://smart-study-planner.vercel.app",
+  "https://smart-study-planner-git-main.vercel.app",
+  "http://localhost:5173",
+  "http://localhost:3000",
+];
+
+function getCorsHeaders(origin: string | null) {
+  const allowedOrigin = ALLOWED_ORIGINS.includes(origin || '') ? (origin || ALLOWED_ORIGINS[0]) : ALLOWED_ORIGINS[0];
+  return {
+    "Access-Control-Allow-Origin": allowedOrigin,
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Credentials": "true",
+  };
+}
 
 // --- Demo / Fallback Responses ---
 
@@ -152,6 +163,7 @@ async function callWithFallback(prompt: string) {
 // --- Main Handler ---
 
 serve(async (req: Request) => {
+  const corsHeaders = getCorsHeaders(req.headers.get("Origin"));
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
   try {
@@ -186,6 +198,6 @@ serve(async (req: Request) => {
   } catch (err) {
     const error = err as Error;
     console.error("Proxy Exception:", error.message);
-    return new Response(JSON.stringify({ error: "Internal Server Error", details: error.message }), { headers: Object.assign({}, corsHeaders, { "Content-Type": "application/json" }), status: 500 });
+    return new Response(JSON.stringify({ error: "Internal Server Error" }), { headers: Object.assign({}, corsHeaders, { "Content-Type": "application/json" }), status: 500 });
   }
 });
