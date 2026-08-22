@@ -233,7 +233,7 @@ const Landing = () => {
           </div>
 
           {/* Hero heading */}
-          <div className="text-center relative z-30 pt-8 md:pt-12 pb-8">
+          <div className="text-center relative z-30 pt-40 md:pt-48 pb-8">
             <h1
               className="text-5xl md:text-7xl lg:text-[5.5rem] font-bold tracking-tight leading-[1.05] mb-6"
               style={{ fontFamily: "'Space Grotesk', sans-serif" }}
