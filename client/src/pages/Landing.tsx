@@ -103,9 +103,8 @@ const Landing = () => {
             ))}
           </div>
 
-          {/* Auth buttons */}
-          <div className="flex items-center gap-4">
-            {renderAuthButton("text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors hidden sm:block")}
+          {/* Auth button */}
+          <div className="flex items-center">
             {renderAuthButton(
               "bg-gray-900 text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-gray-800 transition-all shadow-sm"
             )}
