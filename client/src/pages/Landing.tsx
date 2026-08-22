@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import AppLogo from '@/components/AppLogo';
 import {
@@ -43,7 +43,13 @@ const features = [
 const navLinks = ['Features', 'About Us'];
 
 const Landing = () => {
-  const { user, loading } = useAuth();
+  const { user, loading, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSwitchAccount = async () => {
+    await signOut();
+    navigate('/auth');
+  };
 
   const renderAuthButton = (className: string, showIcon = false) => {
     if (loading) {
@@ -103,10 +109,24 @@ const Landing = () => {
             ))}
           </div>
 
-          {/* Auth button */}
-          <div className="flex items-center">
-            {renderAuthButton(
-              "bg-gray-900 text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-gray-800 transition-all shadow-sm"
+          {/* Auth buttons */}
+          <div className="flex items-center gap-3">
+            {user ? (
+              <>
+                {renderAuthButton(
+                  "bg-gray-900 text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-gray-800 transition-all shadow-sm"
+                )}
+                <button
+                  onClick={handleSwitchAccount}
+                  className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors px-3 py-2 rounded-lg hover:bg-gray-100"
+                >
+                  Switch Account
+                </button>
+              </>
+            ) : (
+              renderAuthButton(
+                "bg-gray-900 text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-gray-800 transition-all shadow-sm"
+              )
             )}
           </div>
         </div>
@@ -153,13 +173,6 @@ const Landing = () => {
                   <span>13:00 – 13:45</span>
                 </div>
               </div>
-            </div>
-          </div>
-
-          {/* Center logo/icon */}
-          <div className="flex justify-center pt-16 md:pt-20 relative z-30">
-            <div className="w-20 h-20 md:w-24 md:h-24 bg-white rounded-2xl shadow-lg border border-gray-100 flex items-center justify-center overflow-hidden">
-              <img src="/STUDORALOGO.png" alt="Studora" className="w-14 h-14 md:w-16 md:h-16 object-contain mix-blend-multiply" />
             </div>
           </div>
 
@@ -220,7 +233,7 @@ const Landing = () => {
           </div>
 
           {/* Hero heading */}
-          <div className="text-center relative z-30 pt-24 md:pt-32 pb-8">
+          <div className="text-center relative z-30 pt-8 md:pt-12 pb-8">
             <h1
               className="text-5xl md:text-7xl lg:text-[5.5rem] font-bold tracking-tight leading-[1.05] mb-6"
               style={{ fontFamily: "'Space Grotesk', sans-serif" }}
