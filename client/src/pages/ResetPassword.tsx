@@ -1,23 +1,29 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTheme } from 'next-themes';
 import { supabase } from '@/integrations/supabase/client';
 import AppLogo from '@/components/AppLogo';
-import { Lock, ArrowRight } from 'lucide-react';
+import { Lock, ArrowRight, Eye, EyeOff } from 'lucide-react';
 import { toast } from 'sonner';
 
 const ResetPassword = () => {
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { setTheme } = useTheme();
+
+  // Force light theme and restore on unmount
+  useEffect(() => {
+    const prev = document.documentElement.getAttribute('data-theme') || 'dark';
+    setTheme('light');
+    return () => setTheme(prev === 'light' ? 'light' : 'dark');
+  }, [setTheme]);
 
   useEffect(() => {
-    // Check if the user is here with a recovery token
     const hashParams = new URLSearchParams(window.location.hash.substring(1));
-    const isRecovery = hashParams.get('type') === 'recovery';
     const isError = hashParams.get('error') !== null;
     
-    // Using Supabase auth change listener to detect the session establishment
-    // from the recovery link click
     const { data: authListener } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (event === 'PASSWORD_RECOVERY') {
@@ -66,30 +72,38 @@ const ResetPassword = () => {
           <AppLogo size={64} />
         </div>
 
-        <div className="glass rounded-2xl p-8 shadow-card">
-          <h2 className="text-xl font-semibold text-center mb-2">Update Password</h2>
-          <p className="text-sm text-muted-foreground text-center mb-6">
+        <div className="bg-white rounded-2xl p-8 shadow-card border border-gray-200/60">
+          <h2 className="text-xl font-semibold text-center mb-2 text-gray-900">Update Password</h2>
+          <p className="text-sm text-gray-500 text-center mb-6">
             Please enter your new password below.
           </p>
           
           <form onSubmit={handleUpdatePassword} className="space-y-4">
             <div className="relative">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 placeholder="New Password"
-                className="w-full bg-secondary rounded-lg pl-10 pr-3 py-3 text-sm text-foreground placeholder:text-muted-foreground border border-border/50 focus:border-primary/50 focus:outline-none transition-colors"
+                className="w-full bg-gray-50 rounded-lg pl-10 pr-10 py-3 text-sm text-gray-900 placeholder:text-gray-400 border border-gray-200 focus:border-blue-500 focus:outline-none transition-colors"
                 required
                 minLength={6}
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                tabIndex={-1}
+              >
+                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-primary text-primary-foreground rounded-lg py-3 text-sm font-semibold hover:opacity-90 transition-opacity glow-primary flex items-center justify-center gap-2 disabled:opacity-50"
+              className="w-full bg-blue-600 text-white rounded-lg py-3 text-sm font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
             >
               {loading ? 'Updating...' : 'Update Password'}
               <ArrowRight className="w-4 h-4" />
