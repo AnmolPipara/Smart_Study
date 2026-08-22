@@ -40,7 +40,7 @@ const Header = () => {
       <div className="max-w-full mx-auto flex items-center justify-between">
         {/* Logo */}
         <div className="flex items-center">
-          <AppLogo size={36} />
+          <AppLogo size={36} showName />
         </div>
 
         {/* Theme Toggle + User Profile */}

@@ -87,7 +87,7 @@ const Landing = () => {
       <nav className="w-full px-6 py-5 z-50 relative">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center">
-            <AppLogo size={40} />
+            <AppLogo size={40} showName />
           </div>
 
           {/* Desktop nav links */}
