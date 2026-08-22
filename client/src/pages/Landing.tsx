@@ -46,9 +46,9 @@ const Landing = () => {
   const { user, loading, signOut } = useAuth();
   const navigate = useNavigate();
 
-  const handleSwitchAccount = async () => {
+  const handleSignUp = async () => {
     await signOut();
-    navigate('/auth');
+    navigate('/auth?mode=signup');
   };
 
   const renderAuthButton = (className: string, showIcon = false) => {
@@ -117,10 +117,10 @@ const Landing = () => {
                   "bg-gray-900 text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-gray-800 transition-all shadow-sm"
                 )}
                 <button
-                  onClick={handleSwitchAccount}
+                  onClick={handleSignUp}
                   className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors px-3 py-2 rounded-lg hover:bg-gray-100"
                 >
-                  Switch Account
+                  Sign Up
                 </button>
               </>
             ) : (
